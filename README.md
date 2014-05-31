@@ -11,9 +11,12 @@ Visor works with both ngRoute and ui-router.
 ## Quick start
 
 **Get Visor**:
- - [download the release](http://illniyar.github.io/visor/release/visor.js) (or [minified](http://illniyar.github.io/visor/release/visor.min.js))
+ - download the [release](http://illniyar.github.io/visor/release/visor.js) (or [minified](http://illniyar.github.io/visor/release/visor.min.js))
  - via **[Bower](http://bower.io/)**: by running `$ bower install visor` from your console
 
+**Sample apps**:
+ - A sample app using ui-router can be found [here](http://illniyar.github.io/visor/sample/ui-router) ([source](https://github.com/Illniyar/visor/tree/master/sample/ui-router))
+ - A sample app using ng-route can be found [here](http://illniyar.github.io/visor/sample/ng-route) ([source](https://github.com/Illniyar/visor/tree/master/sample/ng-route))
 
 ###Authenticate with visor:
 

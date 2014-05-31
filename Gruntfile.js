@@ -15,7 +15,10 @@ module.exports = function(grunt){
 				'* @license MIT License, http://www.opensource.org/licenses/MIT\n'+
 				'*/\n'
 		},
-		clean: [ '<%= builddir %>','<%=sitedir %>'],
+		clean: {
+			dist: ['<%= builddir %>','<%=sitedir %>'],
+			"gh-pages":['.grunt']
+		} ,
 		concat:{
 			options: {
 				banner: '<%=meta.banner\n\n%>' +
@@ -62,6 +65,7 @@ module.exports = function(grunt){
 			site: {
 				files: [
 					{expand:true,src:'<%=releasedir%>/**',dest:'<%=sitedir%>'},
+					{expand:true,src:'README.md',dest:'<%=sitedir%>'},
 					{expand:true,src:'sample/**',dest:'<%=sitedir%>'}]
 			}
 		}
@@ -69,6 +73,6 @@ module.exports = function(grunt){
 
 	grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify']);
 	grunt.registerTask('dist', 'Perform a clean build', ['clean', 'build','copy:release']);
-	grunt.registerTask('release', 'Perform a clean build', ['dist','copy:site','gh-pages']);
+	grunt.registerTask('release', 'Perform a clean build', ['dist','copy:site','gh-pages','clean:gh-pages']);
 
 }

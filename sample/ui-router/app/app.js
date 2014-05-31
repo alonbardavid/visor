@@ -47,13 +47,14 @@
 			});
 			$urlRouterProvider.otherwise("/home");
 		})
-		.controller("MainCtrl",function($scope,$cookies,$rootScope,$state,visor){
-			$scope.$state = $state;
+		.controller("MainCtrl",function($scope,$cookies,$state,$rootScope,visor){
 			$scope.logout = function(){
 				delete $cookies.user;
 				$rootScope.user = undefined;
 				visor.setUnauthenticated();
 				$state.go("home");
 			}
+		}).run(function($state,$rootScope){
+			$rootScope.$state = $state;
 		})
 })();
