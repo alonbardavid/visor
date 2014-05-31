@@ -7,16 +7,16 @@
     <script src="../lib/angular-route.js"></script>
     <script src="../../release/visor.js"></script>
     <script src="app/app.js"></script>
-    <title ng-bind="$state.current.name + ' - visor sample app'"></title>
+    <title>visor sample app</title>
 </head>
 <body ng-controller="MainCtrl">
     <div class="navbar navbar-default">
         <div class="navbar-inner">
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-left">
-                    <li ng-class="{active: $state.includes('home')}"><a href="#/home">Home</a></li>
-                    <li ng-class="{active: $state.includes('private')}"><a href="#/private">Private</a></li>
-                    <li ng-class="{active: $state.includes('admin')}"><a href="#/admin">Admin</a></li>
+                    <li ng-class="{active: $route.current.originalPath == '/home'}"><a href="#/home">Home</a></li>
+                    <li ng-class="{active: $route.current.originalPath == '/private'}"><a href="#/private">Private</a></li>
+                    <li ng-class="{active: $route.current.originalPath == '/admin'}"><a href="#/admin">Admin</a></li>
                 </ul>
                 <div class="nav navbar-nav navbar-right" ng-if="!user" ><a href="#/login">Login</a></div>
                 <div class="nav navbar-nav navbar-right" ng-if="user" >You are logged in. <a ng-click="logout()">Logout</a></div>

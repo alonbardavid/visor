@@ -40,10 +40,10 @@
 				templateUrl:"app/admin.html",
 				restrict:function(user){return user && user.is_admin;}
 			})
-			.otherwise("/home");
+			.otherwise({redirectTo:"/home"});
 		})
 		.controller("MainCtrl",function($scope,$cookies,$rootScope,$route,visor,$location){
-			$scope.route = $route.current;
+			$scope.$route = $route;
 			$scope.logout = function(){
 				delete $cookies.user;
 				$rootScope.user = undefined;
