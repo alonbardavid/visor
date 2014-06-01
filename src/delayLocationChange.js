@@ -9,7 +9,7 @@
 			var changeStarted = false,_toUrl,_fromUrl,nextUrl;
 			function checkPromises(){
 				unfinishedPromises--;
-				if (unfinishedPromises <= 0){
+				if (changeStarted && unfinishedPromises <= 0){
 					reloadChange();
 				}
 			}
@@ -41,7 +41,7 @@
 				unlisten();
 				e.preventDefault();
 				waitingFunctions.forEach(function(fn){addPromise($injector.invoke(fn))});
-				if(unfinishedPromises === 0 && !_toUrl){ //firstCall and no promises
+                if(unfinishedPromises === 0 && !_toUrl){ //firstCall and no promises
 					unfinishedPromises++;
 					$timeout(checkPromises,1);
 				}

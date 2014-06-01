@@ -57,7 +57,7 @@
       }];
 
 
-      this.$get = ["$injector","$q","$rootScope","$location","visorPermissions","delayLocationChange",function($injector,$q,$rootScope,$location,visorPermissions,delayLocationChange){
+      this.$get = ["$injector","$q","$rootScope","$location","visorPermissions",function($injector,$q,$rootScope,$location,visorPermissions){
           var _authenticationPromise = false;
           function onAuthenticationSuccess(authData) {
               Visor.authData =authData;
@@ -98,13 +98,16 @@
 							},
 							setUnauthenticated: function(){
 								onAuthenticationFailed()
-							}
+							},
+              config:config
           };
-          if (config.authenticateOnStartup) {
-            delayLocationChange(function(){ return Visor.authenticate()});
-          }
           return Visor;
       }]
+  }])
+  .run(["visor","delayLocationChange",function(visor,delayLocationChange){
+    if (visor.config.authenticateOnStartup) {
+      delayLocationChange(visor.authenticate())
+    }
   }])
   .config(["visorPermissionsProvider",function(visorPermissionsProvider){
         visorPermissionsProvider.doBeforeFirstCheck.push(["visor",function(Visor){

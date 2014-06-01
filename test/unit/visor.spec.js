@@ -67,6 +67,27 @@ describe('visor', function() {
         });
       })
     });
+    it("should allow using dependent services in auth",function(){
+      var authCalled = false;
+      angular.module("test.visor.authentication.with.service",['visor'])
+        .service("authService",function($q){
+          return function(){
+            authCalled = true;
+            return $q.when("auth!");
+          }
+        })
+        .config(function(visorProvider){
+          visorProvider.authenticate = function(authService){
+            return authService()
+          };
+        });
+      module("test.visor.authentication.with.service");
+      inject(function(visor,$location,$rootScope){
+        $location.url("/thingy");
+        $rootScope.$apply();
+        expect(authCalled).toEqual(true);
+      });
+    })
 	});
 
 	describe("ngRoute",function(){
@@ -98,9 +119,10 @@ describe('visor', function() {
         return $q.when({username:"myName"});
       };
       module("test.config.ngRoute");
-      inject(function($rootScope,$location,$route,visor) {
+      inject(function($rootScope,$location,$route,visor,$timeout) {
         $location.url("/private_url");
         $rootScope.$apply();
+        $timeout.flush();
         expect($location.url()).toEqual("/private_url")
       });
     });
@@ -110,9 +132,10 @@ describe('visor', function() {
         return $q.reject("not authenticated");
       };
       module("test.config.ngRoute");
-      inject(function($rootScope,$q,$location,$route,visor) {
+      inject(function($rootScope,$q,$location,$route,visor,$timeout) {
         $location.url("/private_url");
         $rootScope.$apply();
+        $timeout.flush();
         expect($route.current.originalPath).toEqual("/login");
         expect($location.search().next).toEqual("/private_url");
       });
@@ -123,9 +146,10 @@ describe('visor', function() {
         return $q.reject("not authenticated");
       };
       module("test.config.ngRoute");
-      inject(function($rootScope,$location,$route,$q,visor) {
+      inject(function($rootScope,$location,$route,$q,visor,$timeout) {
         $location.url("/public");
         $rootScope.$apply();
+        $timeout.flush();
         expect($location.url()).toEqual("/public");
       });
     });
@@ -134,9 +158,10 @@ describe('visor', function() {
         return $q.reject("not authenticated");
       };
       module("test.config.ngRoute");
-      inject(function($rootScope,$route,$q,visor,$location) {
+      inject(function($rootScope,$route,$q,visor,$location,$timeout) {
         $location.url("/private_url");
         $rootScope.$apply();
+        $timeout.flush();
         expect($route.current.originalPath).toEqual("/login");
         visor.setAuthenticated({username:"some_name"});
         $rootScope.$apply();
@@ -150,9 +175,10 @@ describe('visor', function() {
         return $q.when(true);
       };
       module("test.config.ngRoute");
-      inject(function($rootScope,$route,$q,visor,$location) {
+      inject(function($rootScope,$route,$q,visor,$location,$timeout) {
         $location.url("/hidden");
         $rootScope.$apply();
+        $timeout.flush();
         expect($route.current.originalPath).toEqual("/access_denied");
         expect($location.url()).toEqual("/access_denied");
       });
@@ -203,9 +229,10 @@ describe('visor', function() {
 				return $q.when({username:"myName"});
 			};
 			module("test.config");
-			inject(function($rootScope,$location,$state,$q,visor) {
+			inject(function($rootScope,$location,$state,$q,visor,$timeout) {
 				$location.url("/private_url");
-				$rootScope.$apply();
+                $rootScope.$apply();
+                $timeout.flush();
 				expect($location.url()).toEqual("/private_url")
 			});
 		});
@@ -229,9 +256,10 @@ describe('visor', function() {
 				return $q.reject("not authenticated");
 			};
 			module("test.config");
-			inject(function($rootScope,$location,$state,$q,visor) {
+			inject(function($rootScope,$location,$state,$q,visor,$timeout) {
 				$location.url("/public");
 				$rootScope.$apply();
+                $timeout.flush();
 				expect($location.url()).toEqual("/public");
 			});
 		});
