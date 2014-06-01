@@ -1,6 +1,6 @@
 /**visor
 * Angular authentication and authorization library
-* @version v0.0.1
+* @version v0.0.2
 * @link  https://github.com/illniyar/visor
 * @license MIT License, http://www.opensource.org/licenses/MIT
 */
@@ -20,7 +20,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 			var changeStarted = false,_toUrl,_fromUrl,nextUrl;
 			function checkPromises(){
 				unfinishedPromises--;
-				if (unfinishedPromises <= 0){
+				if (changeStarted && unfinishedPromises <= 0){
 					reloadChange();
 				}
 			}
@@ -52,7 +52,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 				unlisten();
 				e.preventDefault();
 				waitingFunctions.forEach(function(fn){addPromise($injector.invoke(fn))});
-				if(unfinishedPromises === 0 && !_toUrl){ //firstCall and no promises
+                if(unfinishedPromises === 0 && !_toUrl){ //firstCall and no promises
 					unfinishedPromises++;
 					$timeout(checkPromises,1);
 				}
@@ -122,7 +122,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
       }];
 
 
-      this.$get = ["$injector","$q","$rootScope","$location","visorPermissions","delayLocationChange",function($injector,$q,$rootScope,$location,visorPermissions,delayLocationChange){
+      this.$get = ["$injector","$q","$rootScope","$location","visorPermissions",function($injector,$q,$rootScope,$location,visorPermissions){
           var _authenticationPromise = false;
           function onAuthenticationSuccess(authData) {
               Visor.authData =authData;
@@ -163,13 +163,16 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 							},
 							setUnauthenticated: function(){
 								onAuthenticationFailed()
-							}
+							},
+              config:config
           };
-          if (config.authenticateOnStartup) {
-            delayLocationChange(function(){ return Visor.authenticate()});
-          }
           return Visor;
       }]
+  }])
+  .run(["visor","delayLocationChange",function(visor,delayLocationChange){
+    if (visor.config.authenticateOnStartup) {
+      delayLocationChange(visor.authenticate())
+    }
   }])
   .config(["visorPermissionsProvider",function(visorPermissionsProvider){
         visorPermissionsProvider.doBeforeFirstCheck.push(["visor",function(Visor){

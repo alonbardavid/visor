@@ -1,10 +1,11 @@
 (function(){
 	angular.module("visorSampleApp",["visor","ui.router","ngCookies"])
 		.config(function(visorProvider,$stateProvider,$urlRouterProvider){
-			visorProvider.authenticate = function($cookies,$q,$rootScope){
-				if ($cookies.user) {
-					$rootScope.user = $cookies.user
-					return $q.when($cookies.user);
+			visorProvider.authenticate = function($cookieStore,$q,$rootScope){
+        var user = $cookieStore.get("user");
+				if (user) {
+					$rootScope.user = user;
+					return $q.when(user);
 				} else {
 					return $q.reject(null);
 				}
@@ -19,11 +20,12 @@
 			.state("login",{
 				templateUrl:"app/login.html",
 				url:"/login",
-				controller:function($scope,visor,$rootScope,$cookies){
+				controller:function($scope,visor,$rootScope,$cookieStore){
 					$scope.login = function(){
-						$cookies.user = {is_admin:$scope.is_admin};
-						$rootScope.user = $cookies.user;
-						visor.setAuthenticated($cookies.user);
+            var user = {is_admin:$scope.is_admin};
+            $cookieStore.put("user",user);
+						$rootScope.user = user;
+						visor.setAuthenticated(user);
 					}
 				},
 				restrict:function(user){return user === undefined;}
@@ -47,9 +49,9 @@
 			});
 			$urlRouterProvider.otherwise("/home");
 		})
-		.controller("MainCtrl",function($scope,$cookies,$state,$rootScope,visor){
+		.controller("MainCtrl",function($scope,$cookieStore,$state,$rootScope,visor){
 			$scope.logout = function(){
-				delete $cookies.user;
+        $cookieStore.remove("user");
 				$rootScope.user = undefined;
 				visor.setUnauthenticated();
 				$state.go("home");
