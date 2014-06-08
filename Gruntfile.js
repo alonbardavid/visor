@@ -52,6 +52,13 @@ module.exports = function(grunt){
 				}
 			}
 		},
+    ngdocs:{
+      all:['src/**/*.js'],
+      options:{
+        dest: 'site/docs',
+        html5Mode: false
+      }
+    },
 		'gh-pages': {
 			options: {
 				base: '<%=sitedir%>'
@@ -73,6 +80,7 @@ module.exports = function(grunt){
 
 	grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify']);
 	grunt.registerTask('dist', 'Perform a clean build', ['clean', 'build','copy:release']);
-	grunt.registerTask('release', 'Perform a clean build', ['dist','copy:site','gh-pages','clean:gh-pages']);
+  grunt.registerTask('site', 'Perform a clean build', ['dist','copy:site','ngdocs:all']);
+  grunt.registerTask('release', 'Perform a clean build', ['site','gh-pages','clean:gh-pages']);
 
 }
