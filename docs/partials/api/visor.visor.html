@@ -1,0 +1,55 @@
+<h1><code ng:non-bindable="">visor</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-visor-page"><p><code>visor</code> is an authentication and authorization service to be used alongside ngRoute or ui-router.</p>
+<p>It handles authentication while <a href="#/api/visor.permissions.visorPermissions"><code>visorPermissions</code></a> handles routing and
+restrciting access.</p>
+<p>To use first define how visor is to authenticate by setting <code>visor.authenticate</code>, and then add
+restriction functions to routes/states.</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/visor.visorPermissions">visorPermissions</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/visor.delayLocationChange">delayLocationChange</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_isauthenticated">isAuthenticated()</h3>
+<div class="isauthenticated"><div class="visor-visor-isauthenticated-page"><p>Determine if user was successfuly authenticated.</p>
+</div><h5 id="methods_isauthenticated_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="visor-visor-isauthenticated-page"><p>True if the user was authenticated. False otherwise.</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_setauthenticated">setAuthenticated(authData)</h3>
+<div class="setauthenticated"><div class="visor-visor-setauthenticated-page"><p>Notify <code>visor</code> that an authentication was successful.</p>
+<p>Typical use is to call this function after a use logs in to the system.</p>
+<div class="alert alert-info">
+<strong>Note</strong>: <code>authData</code> should be the identical to the result of the promise returned from <a href="#/api/visor.visorProvider#authenticate"><code>visorProvider.authenticate</code></a>.
+</div></div><h5 id="methods_setauthenticated_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>authData</td><td><a href="" class="label type-hint type-hint-any">Any</a></td><td><div class="visor-visor-setauthenticated-page"><p>The authentication data to be used in future restrict functions.</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_setunauthenticated">setUnauthenticated()</h3>
+<div class="setunauthenticated"><div class="visor-visor-setunauthenticated-page"><p>Notify <code>visor</code> that a user is no longer authenticated.</p>
+<p>Typical use is to call this function after a user logs out of the system.</p>
+</div></div>
+</li>
+</ul>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="visor-visor-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function(visorProvider,$stateProvider){
+  visorProvider.authenticate = function($http){
+   return $http.get("/api/user/me").then(function(res){
+     return res.data;
+   })
+  };
+  $stateProvider.state("private",{
+    restrict: function(user){ return user && user.can_see_private;}
+  })
+}
+</pre>
+</div></div>
+</div>

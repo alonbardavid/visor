@@ -1,0 +1,20 @@
+<h1><code ng:non-bindable="">authenticatedOnly</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-authenticatedonly-page"><h3 id="description_authenticatedonly">authenticatedOnly</h3>
+<p><code>authenticatedOnly</code> is a restrict function that only allows authenticated users access to a route.</p>
+</div></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="visor-authenticatedonly-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function($stateProvider,authenticatedOnly){
+  $stateProvider.state("private",{
+    restrict: authenticatedOnly
+  })
+}
+</pre>
+</div></div>
+</div>

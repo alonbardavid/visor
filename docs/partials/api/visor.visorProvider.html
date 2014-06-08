@@ -1,0 +1,137 @@
+<h1><code ng:non-bindable="">visorProvider</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-visorprovider-page"><p><code>visorProvider</code> provides configuration options to define how authentication and authorization works.</p>
+<p>The only required configuration is <a href="#/api/visor.visorProvider#authenticate"><code>visorProvider.authenticate</code></a>.</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/visor.visorPermissions">visorPermissions</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/visor.delayLocationChange">delayLocationChange</a></code>
+</li>
+</ul>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_authenticate">authenticate</h3>
+<div class="authenticate"><div class="visor-visorprovider-authenticate-page"><p>This function needs to be configured in order to use visor.</p>
+<p><code>visorProvider.authentication</code> defines the authentication function that will be called to provide
+the authentication info at startup.
+It must return a promise that will resolve to an object if the user is authenticated or rejected if
+the user isn&#39;t authenticated.</p>
+</div><h4 id="properties_authenticate_example">Example</h4>
+<div class="example"><div class="visor-visorprovider-authenticate-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function(visorProvider,$stateProvider){
+  visorProvider.authenticate = function($http){
+   return $http.get("/api/user/me").then(function(res){
+     return res.data;
+   });
+  };
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="properties_authenticateonstartup">authenticateOnStartup</h3>
+<div class="authenticateonstartup"><div class="visor-visorprovider-authenticateonstartup-page"><p>If <code>true</code> visor will try to authenticate before any route is accessed (it will stop the routing until the authentication promise is resolved).
+If <code>false</code> will only authenticate when a user tries to access a route with restriction.</p>
+<p>Defaults to <code>true</code></p>
+</div></div>
+</li>
+<li><h3 id="properties_doaftermanualauthentication">doAfterManualAuthentication</h3>
+<div class="doaftermanualauthentication"><div class="visor-visorprovider-doaftermanualauthentication-page"><p>The action to take after a user is authenticated using <a href="#/api/visor.visor#setauthenticated"><code>visor.setAuthenticated</code></a>.
+By default it redirect to next parameter if exists or to <a href="#/api/visor.visorProvider#homeroute"><code>homeRoute</code></a>.</p>
+</div><h4 id="properties_doaftermanualauthentication_example">Example</h4>
+<div class="example"><div class="visor-visorprovider-doaftermanualauthentication-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function(visorProvider,$stateProvider){
+  //redirect to a new user welcome page
+  visorProvider.doAfterManualAuthentication = function($state){
+   $state.go("new_user.welcome")
+  };
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="properties_doonnotauthenticated">doOnNotAuthenticated</h3>
+<div class="doonnotauthenticated"><div class="visor-visorprovider-doonnotauthenticated-page"><p>The action to take when a user tries to access a restricted route but is not authenticated.
+By default it redirect to <a href="#/api/visor.visorProvider#loginroute"><code>loginRoute</code></a>.
+If <a href="#/api/visor.visorProvider#shouldaddnext"><code>shouldAddNext</code></a> is enabled, a <code>next</code> parameter with the restricted url is added to the login url.</p>
+<p>The url that was restricted is provided by an injected argument named <code>restrictedUrl</code></p>
+</div><h4 id="properties_doonnotauthenticated_example">Example</h4>
+<div class="example"><div class="visor-visorprovider-doonnotauthenticated-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function(visorProvider,$stateProvider){
+ //redirect to an error page instead of login
+  visorProvider.doOnNotAuthenticated = function(restrictedUrl,$state){
+   $state.go("error",{
+     message: "you need to be logged in to access " + restrictedUrl
+   })
+  };
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="properties_doonnotauthorized">doOnNotAuthorized</h3>
+<div class="doonnotauthorized"><div class="visor-visorprovider-doonnotauthorized-page"><p>The action taken when an already authenticated user tries to access a route he is not allowed to view.
+By default it redirect to <a href="#/api/visor.visorProvider#notauthorizedroute"><code>notAuthorizedRoute</code></a>.</p>
+<p>The url that was restricted is provided by an injected argument named <code>restrictedUrl</code></p>
+</div><h4 id="properties_doonnotauthorized_example">Example</h4>
+<div class="example"><div class="visor-visorprovider-doonnotauthorized-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function(visorProvider,$stateProvider){
+ //redirect to an error page with the restricted url message
+  visorProvider.doOnNotAuthorized = function(restrictedUrl,$state){
+   $state.go("error",{
+     message: "you are not allowed to access " + restrictedUrl
+   })
+  };
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="properties_homeroute">homeRoute</h3>
+<div class="homeroute"><div class="visor-visorprovider-homeroute-page"><p>The route to go to after manual authentication.
+Only meaningful when using the default <a href="#/api/visor.visorProvider#doaftermanualauthentication"><code>visorProvider.doAfterManualAuthentication</code></a> function.</p>
+<p>Defaults to <code>/</code></p>
+</div></div>
+</li>
+<li><h3 id="properties_loginroute">loginRoute</h3>
+<div class="loginroute"><div class="visor-visorprovider-loginroute-page"><p>The route to go to after an unauthenticated user tries to access a restricted url.
+Only meaningful when using the default <a href="#/api/visor.visorProvider#doonnotauthenticated"><code>visorProvider.doOnNotAuthenticated</code></a> function.</p>
+<p>Defaults to <code>/login</code></p>
+</div></div>
+</li>
+<li><h3 id="properties_notauthorizedroute">notAuthorizedRoute</h3>
+<div class="notauthorizedroute"><div class="visor-visorprovider-notauthorizedroute-page"><p>The route to go to after an authenticated user tries to access a restricted url.
+Only meaningful when using the default <a href="#/api/visor.visorProvider#doonnotauthorized"><code>visorProvider.doOnNotAuthorized</code></a> function.</p>
+<p>Defaults to <code>/access_denied</code></p>
+</div></div>
+</li>
+<li><h3 id="properties_shouldaddnext">shouldAddNext</h3>
+<div class="shouldaddnext"><div class="visor-visorprovider-shouldaddnext-page"><p>When using the default <a href="#/api/visor.visorProvider#doonnotauthenticated"><code>visorProvider.doOnNotAuthenticated</code></a> function, visor adds a <code>next</code> parameter to the login url provided in <a href="#/api/visor.visorProvider#loginroute"><code>loginRoute</code></a>.
+Once  a user manually authenticates, that route is used to redirect back to the original requested url.</p>
+<p>If <code>false</code> will not add the next url in <a href="#/api/visor.visorProvider#doonnotauthenticated"><code>visorProvider.doOnNotAuthenticated</code></a>.</p>
+<p>Defaults to <code>true</code></p>
+</div></div>
+</li>
+</ul>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="visor-visorprovider-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function(visorProvider){
+  visorProvider.authenticate = function($http){
+   return $http.get("/api/user/me").then(function(res){
+     return res.data;
+   })
+  };
+}
+</pre>
+</div></div>
+</div>

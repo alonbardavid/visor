@@ -1,0 +1,20 @@
+<h1><code ng:non-bindable="">notForAuthenticated</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-notforauthenticated-page"><h3 id="description_notforauthenticated">notForAuthenticated</h3>
+<p><code>notForAuthenticated</code> is a restrict function that does not allow authenticated users access to a route.</p>
+</div></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="visor-notforauthenticated-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor"])
+.config(function($stateProvider,notForAuthenticated){
+  $stateProvider.state("private",{
+    restrict: notForAuthenticated
+  })
+}
+</pre>
+</div></div>
+</div>
