@@ -1,6 +1,6 @@
 /**visor
 * Angular authentication and authorization library
-* @version v0.0.2
+* @version v0.0.3
 * @link  https://github.com/illniyar/visor
 * @license MIT License, http://www.opensource.org/licenses/MIT
 */
@@ -44,7 +44,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 			};
 			function addPromise(promise){
 				unfinishedPromises++;
-				promise.finally(checkPromises);
+				promise["finally"](checkPromises);
 			}
 			var unlisten = $rootScope.$on("$locationChangeStart",function(e,toUrl,fromUrl){
 				changeStarted = true;
@@ -422,7 +422,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 _authenticationPromise = deferred.promise;
                 $injector.invoke(config.authenticate)
                     .then(onAuthenticationSuccess,onAuthenticationFailed)
-                    .finally(function(){
+                    ["finally"](function(){
                         deferred.resolve(Visor.authData)
                     });
                 return deferred.promise;
@@ -572,7 +572,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                         $q.all(config.doBeforeFirstCheck.map(function(cb){
                             return $injector.invoke(cb)
                         }))
-                        .finally(function(){
+                        ["finally"](function(){
                             finishedBeforeCheck = true;
                             if (handlePermission(next,permissions)) {
                                 waitForMe.resolve(true);
