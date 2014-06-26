@@ -33,7 +33,7 @@
 			};
 			function addPromise(promise){
 				unfinishedPromises++;
-				promise.finally(checkPromises);
+				promise['finally'](checkPromises);
 			}
 			var unlisten = $rootScope.$on("$locationChangeStart",function(e,toUrl,fromUrl){
 				changeStarted = true;

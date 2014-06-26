@@ -357,7 +357,7 @@
                 _authenticationPromise = deferred.promise;
                 $injector.invoke(config.authenticate)
                     .then(onAuthenticationSuccess,onAuthenticationFailed)
-                    .finally(function(){
+                    ['finally'](function(){
                         deferred.resolve(Visor.authData)
                     });
                 return deferred.promise;
