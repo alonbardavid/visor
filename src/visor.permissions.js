@@ -35,7 +35,7 @@
                         $q.all(config.doBeforeFirstCheck.map(function(cb){
                             return $injector.invoke(cb)
                         }))
-                        ["finally"](function(){
+                        ['finally'](function(){
                             finishedBeforeCheck = true;
                             if (handlePermission(next,permissions)) {
                                 waitForMe.resolve(true);
