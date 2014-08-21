@@ -1,7 +1,6 @@
 #Visor
 
-## Authentication and authorization library for angular.js
-
+## Authentication and authorization library for angular.js [![Build Status](https://travis-ci.org/Illniyar/visor.svg)](https://travis-ci.org/Illniyar/visor)
 ---
 
 Visor is an authentication and authorization framework for [AngularJS](http://angularjs.org).  
@@ -18,6 +17,9 @@ Visor works with both ngRoute and ui-router.
  - A sample app using ui-router can be found [here](http://illniyar.github.io/visor/sample/ui-router) ([source](https://github.com/Illniyar/visor/tree/master/sample/ui-router))
  - A sample app using ng-route can be found [here](http://illniyar.github.io/visor/sample/ng-route) ([source](https://github.com/Illniyar/visor/tree/master/sample/ng-route))
 
+**API documentation**:
+ - [API docs](http://illniyar.github.io/visor/docs)
+ 
 ###Authenticate with visor:
 
 
