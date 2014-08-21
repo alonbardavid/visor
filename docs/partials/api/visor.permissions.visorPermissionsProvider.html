@@ -1,0 +1,89 @@
+<h1><code ng:non-bindable="">visorPermissionsProvider</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor.permissions</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-permissions-visorpermissionsprovider-page"><p><code>visorPermissionsProvider</code> provides a pluggable configuration to adjust how <code>visor.permissions</code>
+will handle route changes.</p>
+<p>Some of the api in the configuration is for use in plugins to allow support for multiple routing modules.\
+Others are for use with clients ( such as <a href="#/api/visor.visor"><code>visor</code></a> ).</p>
+<p>For examples of using the various plugin methods see the <a href="#/api/visor.ngRoute">visor.ngRoute</a>
+and <a href="#/api/visor.ui-router">visor.ui-router</a> source codes.</p>
+</div></div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_dobeforefirstcheck">doBeforeFirstCheck</h3>
+<div class="dobeforefirstcheck"><div class="visor-permissions-visorpermissionsprovider-dobeforefirstcheck-page"><p>A list of functions to run before the first permission check is performed (I.E. the first time a route that
+requires permissions is navigated to).
+These functions must return a promise.</p>
+</div><h4 id="properties_dobeforefirstcheck_example">Example</h4>
+<div class="example"><div class="visor-permissions-visorpermissionsprovider-dobeforefirstcheck-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor.permissions"])
+.config(function(visorPermissionsProvider){
+   visorPermissionsProvider.doBeforeFirstCheck.push(["$http",function($http){
+     return $http.get("/do/something");
+   }]);
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="properties_getpermissionsfromnext">getPermissionsFromNext</h3>
+<div class="getpermissionsfromnext"><div class="visor-permissions-visorpermissionsprovider-getpermissionsfromnext-page"><div class="alert alert-info">
+NOTE: should only be changed by routing module plugins
+</div>
+
+<p>A function that determines how permissions should be resolved from a route object.
+It receives the <code>next</code> route object as the only parameter and must return a <code>permission function</code>,
+or an Array of <code>permission functions</code>.</p>
+<p>A route object is an object that is sent to
+<a href="#/api/visor.permissions.visorPermissions#onroutechange">onRouteChange</a>.
+This configuration should be set by the same plugin that calls
+<a href="#/api/visor.permissions.visorPermissions#onroutechange">onRouteChange</a> to guarantee compatibility.</p>
+<p>A <code>permission function</code> is a function that receives <a href="#/api/visor.permissions.VisorPermissions.invokeParameters">visor.permissions.VisorPermissions.invokeParameters</a>
+and returns a boolean indicating whether a route change should occur (I.E. the user has permission to access
+the route)</p>
+<p>Default: a function that returns the permission function that is in the <code>next</code> route object&#39;s <code>restrict</code>
+attribute (if any).</p>
+<p>Can also be changed at runtime by changing <a href="#/api/visor.permissions.visorPermissions#getpermissionsfromnext">visor.permissions.visorPermissions#getPermissionsFromNext</a></p>
+</div><h4 id="properties_getpermissionsfromnext_example">Example</h4>
+<div class="example"><div class="visor-permissions-visorpermissionsprovider-getpermissionsfromnext-page"><pre class="prettyprint linenums">
+// a plugin module that will allow all paths to go through
+angular.moudle("myModule",["visor.permissions"])
+.config(function(visorPermissionsProvider){
+   visorPermissionsProvider.getPermissionsFromNext = function(next){
+     return function(){
+       return true;
+     }
+   }
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="properties_invokeparameters">invokeParameters</h3>
+<div class="invokeparameters"><div class="visor-permissions-visorpermissionsprovider-invokeparameters-page"><p>a list of values to send to each <code>permission function</code> to be used to determine if a route is allowed.</p>
+<p>Can also be changed at runtime by changing <a href="#/api/visor.permissions.visorPermissions#invokeparameters">visor.permissions.visorPermissions#invokeParameters</a></p>
+</div><h4 id="properties_invokeparameters_example">Example</h4>
+<div class="example"><div class="visor-permissions-visorpermissionsprovider-invokeparameters-page"><pre class="prettyprint linenums">
+angular.moudle("myModule",["visor.permissions"])
+.config(function(visorPermissionsProvider){
+   var userInfo = {username:"theUser",isAdmin:false};
+   visorPermissionsProvider.invokeParameters.push(userInfo);
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="properties_onnotallowed">onNotAllowed</h3>
+<div class="onnotallowed"><div class="visor-permissions-visorpermissionsprovider-onnotallowed-page"><div class="alert alert-info">
+NOTE: should only be changed by routing module plugins
+</div>
+
+<p>function to call when a permission failed to validate.</p>
+<p>The function is injected, with local <code>restrictedUrl</code> containing the url navigated to.</p>
+</div></div>
+</li>
+</ul>
+</div>
+</div>

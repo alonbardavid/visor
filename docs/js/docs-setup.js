@@ -5,12 +5,30 @@ NG_DOCS={
   "pages": [
     {
       "section": "api",
+      "id": "delayLocationChange",
+      "shortName": "delayLocationChange",
+      "type": "overview",
+      "moduleName": "delayLocationChange",
+      "shortDescription": "delayLocationChange",
+      "keywords": "api delaylocationchange module overview service"
+    },
+    {
+      "section": "api",
+      "id": "delayLocationChange.delayLocationChange",
+      "shortName": "delayLocationChange.delayLocationChange",
+      "type": "service",
+      "moduleName": "delayLocationChange",
+      "shortDescription": "delayLocationChange",
+      "keywords": "$http allows angular api change complete delay delaylocationchange function location module multiple mymodule promise rendering resolved result return running service services time waitfor"
+    },
+    {
+      "section": "api",
       "id": "visor",
       "shortName": "visor",
-      "type": "object",
+      "type": "overview",
       "moduleName": "visor",
       "shortDescription": "Visor",
-      "keywords": "api authentication authorization doc-module-components module object usage visor"
+      "keywords": "api authentication authorization doc-module-components module overview usage visor"
     },
     {
       "section": "api",
@@ -23,12 +41,57 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "visor.ngRoute",
+      "shortName": "visor.ngRoute",
+      "type": "overview",
+      "moduleName": "visor.ngRoute",
+      "shortDescription": "Visor.ngRoute",
+      "keywords": "add api automatically exists ngroute overview permissions supports visor"
+    },
+    {
+      "section": "api",
       "id": "visor.notForAuthenticated",
       "shortName": "visor.notForAuthenticated",
       "type": "service",
       "moduleName": "visor",
       "shortDescription": "notForAuthenticated",
       "keywords": "$stateprovider access allow angular api authenticated config function moudle mymodule notforauthenticated private restrict route service users visor"
+    },
+    {
+      "section": "api",
+      "id": "visor.permissions",
+      "shortName": "visor.permissions",
+      "type": "overview",
+      "moduleName": "visor.permissions",
+      "shortDescription": "Visor.Permissions",
+      "keywords": "access api based handling overview permissions restricting restrictions routes service support usage visor visorpermissions"
+    },
+    {
+      "section": "api",
+      "id": "visor.permissions.visorPermissions",
+      "shortName": "visor.permissions.visorPermissions",
+      "type": "service",
+      "moduleName": "visor.permissions",
+      "shortDescription": "visorPermissions checks for permissions and notifies when a routes that isn&#39;t allowed is requested.",
+      "keywords": "alert alert-info allowed api call called case change changed changes check checks class configuration configure delaychange delayed depending false function functions getpermissionsfromnext invokeparameters isn module ngroute note notifies object onroutechange order permission permissions plugins promise property provided rejected requested requires resolved route routes routing runtime service string triggers true ui-router visor visorpermissions visorpermissionsprovider work"
+    },
+    {
+      "section": "api",
+      "id": "visor.permissions.visorPermissionsProvider",
+      "shortName": "visor.permissions.visorPermissionsProvider",
+      "type": "service",
+      "moduleName": "visor.permissions",
+      "shortDescription": "visorPermissionsProvider provides a pluggable configuration to adjust how visor.permissions",
+      "keywords": "$http access adjust alert alert-info allow allowed angular api array attribute boolean call calls change changed changes changing check class clients codes compatibility config configuration default determine determines dobeforefirstcheck examples failed function functions getpermissionsfromnext guarantee handle indicating injected invokeparameters isadmin list local methods module modules moudle multiple mymodule navigated ngroute note object occur onnotallowed onroutechange parameter paths performed permission permissions pluggable plugin plugins promise property push receives requires resolved restrict restrictedurl return returns route routing runtime send service set source support theuser time true ui-router url user userinfo validate values var visor visorpermissions visorpermissionsprovider"
+    },
+    {
+      "section": "api",
+      "id": "visor.ui-router",
+      "shortName": "visor.ui-router",
+      "type": "overview",
+      "moduleName": "visor.ui-router",
+      "shortDescription": "Visor.ui-router",
+      "keywords": "add api automatically exists overview permissions supports ui-router visor"
     },
     {
       "section": "api",

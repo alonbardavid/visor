@@ -1,0 +1,40 @@
+<h1><code ng:non-bindable="">visorPermissions</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor.permissions</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-permissions-visorpermissions-page"><p><code>visorPermissions</code> checks for permissions and notifies when a routes that isn&#39;t allowed is requested.</p>
+<p>In order to work, routing module plugins (such as the provided <a href="#/api/visor.ngRoute">visor.ngRoute</a> and
+<a href="#/api/visor.ui-router">visor.ui-router</a> must configure <code>visorPermissions</code> and call
+<a href="#/api/visor.permissions.visorPermissions#onroutechange">onRouteChange</a> when a route has changed.</p>
+</div></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_onroutechange">onRouteChange(next, delayChange)</h3>
+<div class="onroutechange"><div class="visor-permissions-visorpermissions-onroutechange-page"><div class="alert alert-info">
+NOTE: should only be called by routing module plugins
+</div>
+
+<p>A function to be called when a route changes, triggers the route permission checks.</p>
+</div><h5 id="methods_onroutechange_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>next</td><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="visor-permissions-visorpermissions-onroutechange-page"><p>route object to be sent to <code>permission functions</code>.</p>
+</div></td></tr><tr><td>delayChange</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="visor-permissions-visorpermissions-onroutechange-page"><p>a function to be called if visorPermissions requires that the route
+change be delayed. in such case the delayChange function will be called with a promise that will be
+resolved or rejected depending on whether the route is allowed.</p>
+</div></td></tr></tbody></table><h5 id="methods_onroutechange_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-any">Any</a></td><td><div class="visor-permissions-visorpermissions-onroutechange-page"><p>true if next is allowed, false if not allowed. a string containing &quot;delayed&quot; if
+the check is delayed.</p>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_getpermissionsfromnext">getPermissionsFromNext</h3>
+<div class="getpermissionsfromnext"><div class="visor-permissions-visorpermissions-getpermissionsfromnext-page"><p>runtime configuration for <a href="#/api/visor.permissions.visorPermissionsProvider#getpermissionsfromnext">getPermissionsFromNext</a>.</p>
+</div></div>
+</li>
+<li><h3 id="properties_invokeparameters">invokeParameters</h3>
+<div class="invokeparameters"><div class="visor-permissions-visorpermissions-invokeparameters-page"><p>runtime configuration for <a href="#/api/visor.permissions.invokeParameters#getpermissionsfromnext">getPermissionsFromNext</a>.</p>
+</div></div>
+</li>
+</ul>
+</div>
+</div>
