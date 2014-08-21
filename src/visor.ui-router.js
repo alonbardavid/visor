@@ -1,5 +1,15 @@
 (function(){
-	angular.module('visor.ui-router',['visor.permissions'])
+  /**
+   * @ngdoc overview
+   * @name visor.ui-router
+   * @description
+   *
+   * # Visor.ui-router
+   *
+   * `Visor.ui-router` automatically add supports for permissions in ui-router, if ui-router exists.
+   *
+   */
+  angular.module('visor.ui-router',['visor.permissions'])
 		.run(['$rootScope', 'visorPermissions','$injector','$timeout','$location',function($rootScope, visorPermissions,$injector,$timeout,$location){
 			var uiModuleExists = false;
 			try {
@@ -8,6 +18,7 @@
 			}catch (e){}
 			if (uiModuleExists) {
 				$injector.invoke(["$state",function($state){
+          // we need to check parent states for permissions as well
 					visorPermissions.getPermissionsFromNext = function(next){
 						var perms = [];
 						while(next) {

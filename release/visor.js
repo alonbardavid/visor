@@ -12,47 +12,108 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 (function(){
 	"use strict";
 
+  /**
+   * @ngdoc overview
+   * @name delayLocationChange
+   * @description
+   *
+   * # delayLocationChange
+   *
+   * `delayLocationChange` module contains the {@link delayLocationChange.delayLocationChange `delayLocationChange`} service.
+   *
+   */
 	angular.module("delayLocationChange",[])
+
 		.service("delayLocationChange",["$rootScope","$q","$timeout","$location","$injector",
 			function($rootScope,$q,$timeout,$location,$injector){
-			var unfinishedPromises = 0;
-			var waitingFunctions = [];
-			var changeStarted = false,_toUrl,_fromUrl,nextUrl;
-			function checkPromises(){
+
+      /**
+      * @ngdoc service
+      * @name delayLocationChange.delayLocationChange
+      * @description
+      *
+      * # delayLocationChange
+      *
+      * `delayLocationChange` allows multiple services to stop the first location change (I.E. the rendering of the first page) until a promise is complete.
+      *
+      *
+      * @param {promise|function()} waitFor - if a promise, will delay until promise is resolved
+       * , if a function, will delay until the result of running the function, which must return a promise, will be resolved.
+      *
+      * @example
+      *
+      * <pre>
+      *   angular.module("myModule",["delayLocationChange"])
+      *   .run(function(delayLocationChange){
+      *     delayLocationChange(function($http){
+      *       return $http.get("/something/that/is/needed")
+      *       .then(function(result){
+      *         //do something with result that you need before rendering the first time
+      *       })
+      *     });
+      *   };
+      * </pre>
+      */
+      var service = function(arg){
+        if (arg.then) {
+          //handles a promise
+          addPromise(arg);
+        } else {
+          //assume it's a function
+          if (changeStarted) {
+            addPromise($injector.invoke(fn));
+          } else {
+            //need to wait until angular started the locationChange, otherwise
+            //something might start running before it's should
+            waitingFunctions.push(arg);
+          }
+        }
+      };
+
+      // we make sure that all promises finish by counting the number of promises
+      //we recieved
+      var unfinishedPromises = 0;
+      var waitingFunctions = [];
+      var changeStarted = false,_toUrl,_fromUrl,nextUrl;
+
+      //checkPromises both determines if all promises were resolved and initiates
+      //the delayed location change if no more promises remain
+      function checkPromises(){
 				unfinishedPromises--;
 				if (changeStarted && unfinishedPromises <= 0){
 					reloadChange();
 				}
 			}
+
 			function reloadChange(){
 				if ($location.absUrl() === _toUrl) {
+          //we are running on the assumption (that might prove false at some point)
+          //that nothing happens between canceling $locationChangeStart and emitting
+          //$locationChangeSuccess
 					$rootScope.$broadcast("$locationChangeSuccess",_toUrl,_fromUrl);
 				} else {
 					$location.url(nextUrl);
 				}
 			}
-			var service = function(arg){
-				if (arg.then) {
-					addPromise(arg);
-				} else {
-					if (changeStarted) {
-						addPromise($injector.invoke(fn));
-					} else {
-						waitingFunctions.push(arg);
-					}
-				}
-			};
+
 			function addPromise(promise){
 				unfinishedPromises++;
-				promise["finally"](checkPromises);
+        //to access using array notation because finally is a reserved word
+				promise['finally'](checkPromises);
 			}
 			var unlisten = $rootScope.$on("$locationChangeStart",function(e,toUrl,fromUrl){
 				changeStarted = true;
 				nextUrl = $location.url();
 				unlisten();
+        //We are relying on the fact that since the url never actually changed,
+        //the fact that angular will return to the previous ulr when doing preventDefault, will not
+        // have any effect
 				e.preventDefault();
 				waitingFunctions.forEach(function(fn){addPromise($injector.invoke(fn))});
-                if(unfinishedPromises === 0 && !_toUrl){ //firstCall and no promises
+
+        if(unfinishedPromises === 0 && !_toUrl){ //firstCall and no promises
+          //we need to let at least one run through to verify
+          //no promises will be added
 					unfinishedPromises++;
 					$timeout(checkPromises,1);
 				}
@@ -69,7 +130,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
   "use strict";
 
   /**
-   * @ngdoc object
+   * @ngdoc overview
    * @name visor
    * @description
    *
@@ -422,7 +483,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 _authenticationPromise = deferred.promise;
                 $injector.invoke(config.authenticate)
                     .then(onAuthenticationSuccess,onAuthenticationFailed)
-                    ["finally"](function(){
+                    ['finally'](function(){
                         deferred.resolve(Visor.authData)
                     });
                 return deferred.promise;
@@ -518,6 +579,17 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
   }])
 })();
 (function(){
+
+  /**
+   * @ngdoc overview
+   * @name visor.ngRoute
+   * @description
+   *
+   * # Visor.ngRoute
+   *
+   * `Visor.ngRoute` automatically add supports for permissions in ngRoute, if ngRoute exists.
+   *
+   */
 	angular.module('visor.ngRoute',['visor.permissions'])
 		.run(['$rootScope', 'visorPermissions','$injector',function($rootScope, visorPermissions,$injector){
 			var ngRouteModuleExists = false;
@@ -536,19 +608,173 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 		}])
 })();
 (function(){
+  /**
+   * @ngdoc overview
+   * @name visor.permissions
+   * @description
+   *
+   * # Visor.Permissions
+   *
+   * `Visor.Permissions` provides support for handling permissions and restricting access to routes based
+   * on those restrictions.
+   *
+   *
+   * See {@link visor.permissions.visorPermissions `visorPermissions service`} for usage.
+   */
+
     angular.module("visor.permissions",[])
+
+    /**
+     * @ngdoc service
+     * @name visor.permissions.visorPermissionsProvider
+     *
+     * @description
+     *
+     * `visorPermissionsProvider` provides a pluggable configuration to adjust how `visor.permissions`
+     *  will handle route changes.
+     *
+     * Some of the api in the configuration is for use in plugins to allow support for multiple routing modules.\
+     * Others are for use with clients ( such as {@link visor.visor `visor`} ).
+     *
+     * For examples of using the various plugin methods see the {@link visor.ngRoute visor.ngRoute}
+     * and {@link visor.ui-router visor.ui-router} source codes.
+     *
+     */
     .provider("visorPermissions",[function(){
         var config = this;
+        /**
+         * @ngdoc property
+         * @name visor.permissions.visorPermissionsProvider#getPermissionsFromNext
+         * @propertyOf visor.permissions.visorPermissionsProvider
+         *
+         * @description
+         *
+         * <div class="alert alert-info">
+         *  NOTE: should only be changed by routing module plugins
+         * </div>
+         *
+         * A function that determines how permissions should be resolved from a route object.
+         * It receives the `next` route object as the only parameter and must return a `permission function`,
+         * or an Array of `permission functions`.
+         *
+         * A route object is an object that is sent to
+         * {@link visor.permissions.visorPermissions#onRouteChange onRouteChange }.
+         * This configuration should be set by the same plugin that calls
+         * {@link visor.permissions.visorPermissions#onRouteChange onRouteChange } to guarantee compatibility.
+         *
+         * A `permission function` is a function that receives {@link visor.permissions.VisorPermissions.invokeParameters}
+         * and returns a boolean indicating whether a route change should occur (I.E. the user has permission to access
+         * the route)
+         *
+         * Default: a function that returns the permission function that is in the `next` route object's `restrict`
+         * attribute (if any).
+         *
+         * Can also be changed at runtime by changing {@link visor.permissions.visorPermissions#getPermissionsFromNext}
+         * @example
+         *
+         * <pre>
+         *   // a plugin module that will allow all paths to go through
+         *   angular.moudle("myModule",["visor.permissions"])
+         *   .config(function(visorPermissionsProvider){
+         *      visorPermissionsProvider.getPermissionsFromNext = function(next){
+         *        return function(){
+         *          return true;
+         *        }
+         *      }
+         *   });
+         * </pre>
+         */
         config.getPermissionsFromNext = function(next){
             return next.restrict? [next.restrict] : [];
         };
+
+        /**
+         * @ngdoc property
+         * @name visor.permissions.visorPermissionsProvider#doBeforeFirstCheck
+         * @propertyOf visor.permissions.visorPermissionsProvider
+         *
+         * @description
+         *
+         *
+         * A list of functions to run before the first permission check is performed (I.E. the first time a route that
+         * requires permissions is navigated to).
+         * These functions must return a promise.
+         *
+         *
+         * @example
+         *
+         * <pre>
+         *   angular.moudle("myModule",["visor.permissions"])
+         *   .config(function(visorPermissionsProvider){
+         *      visorPermissionsProvider.doBeforeFirstCheck.push(["$http",function($http){
+         *        return $http.get("/do/something");
+         *      }]);
+         *   });
+         * </pre>
+         */
         config.doBeforeFirstCheck = [];
+        /**
+         * @ngdoc property
+         * @name visor.permissions.visorPermissionsProvider#onNotAllowed
+         * @propertyOf visor.permissions.visorPermissionsProvider
+         *
+         * @description
+         *
+         * <div class="alert alert-info">
+         *  NOTE: should only be changed by routing module plugins
+         * </div>
+         *
+         * function to call when a permission failed to validate.
+         *
+         * The function is injected, with local `restrictedUrl` containing the url navigated to.
+         *
+         */
         config.onNotAllowed = function(){};
+
+        /**
+         * @ngdoc property
+         * @name visor.permissions.visorPermissionsProvider#invokeParameters
+         * @propertyOf visor.permissions.visorPermissionsProvider
+         *
+         * @description
+         *
+         * a list of values to send to each `permission function` to be used to determine if a route is allowed.
+         *
+         * Can also be changed at runtime by changing {@link visor.permissions.visorPermissions#invokeParameters}
+         *
+         * @example
+         *
+         * <pre>
+         *   angular.moudle("myModule",["visor.permissions"])
+         *   .config(function(visorPermissionsProvider){
+         *      var userInfo = {username:"theUser",isAdmin:false};
+         *      visorPermissionsProvider.invokeParameters.push(userInfo);
+         *   });
+         * </pre>
+         */
         config.invokeParameters = [];
         var finishedBeforeCheck = false;
+
+
+        /**
+         * @ngdoc service
+         * @name visor.permissions.visorPermissions
+         *
+         * @description
+         *
+         * `visorPermissions` checks for permissions and notifies when a routes that isn't allowed is requested.
+         *
+         * In order to work, routing module plugins (such as the provided {@link visor.ngRoute visor.ngRoute} and
+         * {@link visor.ui-router visor.ui-router} must configure `visorPermissions` and call
+         * {@link visor.permissions.visorPermissions#onRouteChange onRouteChange} when a route has changed.
+         *
+         */
         this.$get = ["$q","$injector","$location",function($q,$injector,$location){
 
             function handlePermission(next,permissions){
+                if (!angular.isArray(permissions)) {
+                  permissions = [permissions];
+                }
                 var isAllowed = true;
                 permissions.forEach(function(permission){
                     isAllowed = isAllowed && permission.apply(null,VisorPermissions.invokeParameters);
@@ -561,7 +787,30 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 }
             }
             var VisorPermissions = {
-                onRouteChange:function(next,delayChange){
+
+                /**
+                 * @ngdoc function
+                 * @name visor.permissions.visorPermissions#onRouteChange
+                 * @methodOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * <div class="alert alert-info">
+                 *  NOTE: should only be called by routing module plugins
+                 * </div>
+                 *
+                 * A function to be called when a route changes, triggers the route permission checks.
+                 *
+                 * @param {*} next route object to be sent to `permission functions`.
+                 *
+                 * @param {function} delayChange a function to be called if visorPermissions requires that the route
+                 *  change be delayed. in such case the delayChange function will be called with a promise that will be
+                 *  resolved or rejected depending on whether the route is allowed.
+                 *
+                 * @returns {Any} true if next is allowed, false if not allowed. a string containing "delayed" if
+                 *  the check is delayed.
+                 */
+                onRouteChange: function(next,delayChange){
                     var permissions = VisorPermissions.getPermissionsFromNext(next);
                     if (!permissions || permissions.length == 0) {
                         return true; // don't do beforeChecks without permissions
@@ -572,7 +821,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                         $q.all(config.doBeforeFirstCheck.map(function(cb){
                             return $injector.invoke(cb)
                         }))
-                        ["finally"](function(){
+                        ['finally'](function(){
                             finishedBeforeCheck = true;
                             if (handlePermission(next,permissions)) {
                                 waitForMe.resolve(true);
@@ -585,7 +834,25 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                         return handlePermission(next,permissions)
                     }
                 },
+                /**
+                 * @ngdoc property
+                 * @name visor.permissions.visorPermissions#getPermissionsFromNext
+                 * @propertyOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * runtime configuration for {@link visor.permissions.visorPermissionsProvider#getPermissionsFromNext getPermissionsFromNext}.
+                 */
                 getPermissionsFromNext: config.getPermissionsFromNext,
+                /**
+                 * @ngdoc property
+                 * @name visor.permissions.visorPermissions#invokeParameters
+                 * @propertyOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * runtime configuration for {@link visor.permissions.invokeParameters#getPermissionsFromNext getPermissionsFromNext}.
+                 */
                 invokeParameters:config.invokeParameters,
 								invokeNotAllowed: function(notAllowedFn){$injector.invoke(notAllowedFn,null,{restrictedUrl:$location.url()})}
             };
@@ -594,7 +861,17 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     }])
 })();
 (function(){
-	angular.module('visor.ui-router',['visor.permissions'])
+  /**
+   * @ngdoc overview
+   * @name visor.ui-router
+   * @description
+   *
+   * # Visor.ui-router
+   *
+   * `Visor.ui-router` automatically add supports for permissions in ui-router, if ui-router exists.
+   *
+   */
+  angular.module('visor.ui-router',['visor.permissions'])
 		.run(['$rootScope', 'visorPermissions','$injector','$timeout','$location',function($rootScope, visorPermissions,$injector,$timeout,$location){
 			var uiModuleExists = false;
 			try {
@@ -603,6 +880,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 			}catch (e){}
 			if (uiModuleExists) {
 				$injector.invoke(["$state",function($state){
+          // we need to check parent states for permissions as well
 					visorPermissions.getPermissionsFromNext = function(next){
 						var perms = [];
 						while(next) {

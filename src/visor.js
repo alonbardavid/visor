@@ -4,7 +4,7 @@
   "use strict";
 
   /**
-   * @ngdoc object
+   * @ngdoc overview
    * @name visor
    * @description
    *
