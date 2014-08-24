@@ -354,7 +354,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
        *      })
        *     };
        *   });
-       * </pre>
+       * </pre>  
        */
       config.doOnNotAuthenticated = ["$location","restrictedUrl",function($location,restrictedUrl){
           $location.url(addNextToUrl(config.loginRoute,$location,restrictedUrl))
