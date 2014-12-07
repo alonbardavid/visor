@@ -35,10 +35,10 @@
 					}
 				}]);
 				var $urlRouter = $injector.get("$urlRouter");
+				var toUrl = null;
 				$rootScope.$on('$stateChangeStart', function(e,next){
+					toUrl = $location.url();
 					var shouldContinue = visorPermissions.onRouteChange(next,function delayChange(promise){
-						e.preventDefault();
-						var toUrl = $location.url();
 						promise.then(function(){
 							if ($location.url() === toUrl) {
 								$urlRouter.sync();
@@ -48,16 +48,16 @@
 							}
 						})
 					});
-					if (!shouldContinue) {
+					if (!shouldContinue || shouldContinue === "delayed") {
 						e.preventDefault();
 					}
 				});
 				visorPermissions.invokeNotAllowed = function(notAllowed){
-					var currentUrl = $location.url();
+
 					//timeout is required because when using preventDefault on $stateChangeStart, the url is
 					//reverted to it's original location, and no change at this time will override this.
 					$timeout(function(){
-						$injector.invoke(notAllowed,null,{restrictedUrl:currentUrl})
+						$injector.invoke(notAllowed,null,{restrictedUrl:toUrl})
 					},0);
 				}
 			}
