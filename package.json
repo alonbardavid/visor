@@ -2,7 +2,7 @@
   "name": "visor",
   "private": true,
 	"author":"Illniyar",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Angular authentication and authorization library",
   "repository": "https://github.com/illniyar/visor",
 	"homepage":"https://github.com/illniyar/visor",
