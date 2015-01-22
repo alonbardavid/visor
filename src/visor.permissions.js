@@ -162,14 +162,21 @@
          */
         this.$get = ["$q","$injector","$location",function($q,$injector,$location){
 
+            function checkPermissions(permissions) {
+              if (!permissions || permissions.length ===0) {
+                return true;
+              }
+              if (!angular.isArray(permissions)) {
+                permissions = [permissions];
+              }
+              var isAllowed = true;
+              permissions.forEach(function(permission){
+                isAllowed = isAllowed && permission.apply(null,VisorPermissions.invokeParameters);
+              });
+              return isAllowed;
+            }
             function handlePermission(next,permissions){
-                if (!angular.isArray(permissions)) {
-                  permissions = [permissions];
-                }
-                var isAllowed = true;
-                permissions.forEach(function(permission){
-                    isAllowed = isAllowed && permission.apply(null,VisorPermissions.invokeParameters);
-                });
+                var isAllowed = checkPermissions(permissions);
                 if (isAllowed) {
 									return true;
                 } else {
@@ -235,6 +242,21 @@
                  * runtime configuration for {@link visor.permissions.visorPermissionsProvider#getPermissionsFromNext getPermissionsFromNext}.
                  */
                 getPermissionsFromNext: config.getPermissionsFromNext,
+
+                /**
+                 *
+                 */
+                checkPermissionsForRoute: function(routeId){
+                  var route = VisorPermissions.getRoute(routeId);
+                  var permissions = VisorPermissions.getPermissionsFromNext(route);
+                  return checkPermissions(permissions);
+                },
+                /**
+                 *
+                 */
+                getRoute: function(routeId){
+                  throw new Error("method now implemented");
+                },
                 /**
                  * @ngdoc property
                  * @name visor.permissions.visorPermissions#invokeParameters

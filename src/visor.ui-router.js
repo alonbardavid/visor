@@ -32,7 +32,10 @@
 							}
 						}
 						return perms;
-					}
+					};
+          visorPermissions.getRoute = function(routeId){
+            return $state.get(routeId);
+          };
 				}]);
 				var $urlRouter = $injector.get("$urlRouter");
 				var toUrl = null;
