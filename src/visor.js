@@ -255,8 +255,8 @@
        *   });
        * </pre>
        */
-      config.doAfterManualAuthentication = ["$location",function($location){
-          $location.url($location.search().next || config.homeRoute);
+      config.doAfterManualAuthentication = ["$location","$window",function($location,$window){
+          $window.location.assign($location.search().next || config.homeRoute);
       }];
       /**
        * @ngdoc function
