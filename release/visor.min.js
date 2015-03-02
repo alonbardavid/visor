@@ -223,9 +223,9 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
       function addNextToUrl(url,$location,restrictedUrl){
           if (config.shouldAddNext){
               if (url.indexOf("?") >=0) {
-                  return url.replace(/\?/,"?next=" + encodeURIComponent(restrictedUrl) + "&");
+                  return url.replace(/\?/,"?next=" + '/#' + encodeURIComponent(restrictedUrl) + "&");
               }
-              return url + "?next=" + encodeURIComponent(restrictedUrl);
+              return url + "?next=" + '/#' + encodeURIComponent(restrictedUrl);
           } else {
               return url;
           }
