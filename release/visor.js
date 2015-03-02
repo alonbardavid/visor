@@ -381,9 +381,9 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
        *   });
        * </pre>
        */
-      config.doAfterManualAuthentication = ["$location",function($location){
-          $location.url($location.search().next || config.homeRoute);
-      }];
+      config.doAfterManualAuthentication = ["$location","$window",function($location,$window){
+          $window.location.assign($location.search().next || config.homeRoute);
+      }]
       /**
        * @ngdoc function
        * @name visor.visorProvider#doOnNotAuthorized
