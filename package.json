@@ -1,11 +1,11 @@
 {
   "name": "angular-visor",
   "author": "Illniyar",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "release/visor.js",
   "description": "Angular authentication and authorization library",
-  "repository": "https://github.com/kwsoft/visor.git",
-  "homepage": "https://github.com/kwsoft/visor.git",
+  "repository": "https://github.com/illniyar/visor.git",
+  "homepage": "https://github.com/illniyar/visor.git",
   "devDependencies": {
     "karma": "~0.12",
     "karma-spec-reporter": "0.0.12",
@@ -32,6 +32,7 @@
     }
   ],
   "scripts": {
+    "bower": "bower install",
     "test": "karma start test/karma.conf.js"
   },
   "dependencies": {

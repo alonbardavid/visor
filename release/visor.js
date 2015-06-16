@@ -1,7 +1,7 @@
 /**visor
 * Angular authentication and authorization library
-* @version v0.0.3
-* @link  https://github.com/illniyar/visor
+* @version v0.0.5
+* @link  https://github.com/illniyar/visor.git
 * @license MIT License, http://www.opensource.org/licenses/MIT
 */
 if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
@@ -897,9 +897,9 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 					}
 				}]);
 				var $urlRouter = $injector.get("$urlRouter");
-        var toUrl = null;
+				var toUrl = null;
 				$rootScope.$on('$stateChangeStart', function(e,next){
-          toUrl = $location.url();
+					toUrl = $location.url();
 					var shouldContinue = visorPermissions.onRouteChange(next,function delayChange(promise){
 						promise.then(function(){
 							if ($location.url() === toUrl) {
@@ -916,7 +916,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 				});
 				visorPermissions.invokeNotAllowed = function(notAllowed){
 
-					var currentUrl = $location.url();
 					//timeout is required because when using preventDefault on $stateChangeStart, the url is
 					//reverted to it's original location, and no change at this time will override this.
 					$timeout(function(){

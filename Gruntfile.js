@@ -1,14 +1,14 @@
 module.exports = function(grunt){
 	require('load-grunt-tasks')(grunt);
-
 	grunt.initConfig({
+        module_name:'visor',
 		pkg: grunt.file.readJSON('package.json'),
 		builddir: 'build',
 		releasedir: 'release',
 		sitedir: 'site',
 		meta: {
 			banner:
-				'/**<%= pkg.name %>\n'+
+				'/**<%= module_name %>\n'+
 				'* <%= pkg.description %>\n' +
 				'* @version v<%= pkg.version %>\n' +
 				'* @link  <%= pkg.homepage %>\n' +
@@ -30,7 +30,7 @@ module.exports = function(grunt){
 			},
 			build: {
 				src: "src/*.js",
-				dest: '<%= builddir %>/<%= pkg.name %>.js'
+				dest: '<%= builddir %>/<%= module_name %>.js'
 			}
 		},
 		uglify: {
@@ -39,7 +39,7 @@ module.exports = function(grunt){
 			},
 			build: {
 				files: {
-					'<%= builddir %>/<%= pkg.name %>.min.js': ['<banner:meta.banner>', '<%= concat.build.dest %>']
+					'<%= builddir %>/<%= module_name %>.min.js': ['<banner:meta.banner>', '<%= concat.build.dest %>']
 				}
 			}
 		},
