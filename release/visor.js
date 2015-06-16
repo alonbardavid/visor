@@ -1,7 +1,7 @@
 /**visor
 * Angular authentication and authorization library
-* @version v0.0.3
-* @link  https://github.com/illniyar/visor
+* @version v0.0.5
+* @link  https://github.com/illniyar/visor.git
 * @license MIT License, http://www.opensource.org/licenses/MIT
 */
 if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
@@ -354,7 +354,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
        *      })
        *     };
        *   });
-       * </pre>  
+       * </pre>
        */
       config.doOnNotAuthenticated = ["$location","restrictedUrl",function($location,restrictedUrl){
           $location.url(addNextToUrl(config.loginRoute,$location,restrictedUrl))
@@ -897,10 +897,10 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 					}
 				}]);
 				var $urlRouter = $injector.get("$urlRouter");
+				var toUrl = null;
 				$rootScope.$on('$stateChangeStart', function(e,next){
+					toUrl = $location.url();
 					var shouldContinue = visorPermissions.onRouteChange(next,function delayChange(promise){
-						e.preventDefault();
-						var toUrl = $location.url();
 						promise.then(function(){
 							if ($location.url() === toUrl) {
 								$urlRouter.sync();
@@ -910,16 +910,16 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 							}
 						})
 					});
-					if (!shouldContinue) {
+					if (!shouldContinue || shouldContinue === "delayed") {
 						e.preventDefault();
 					}
 				});
 				visorPermissions.invokeNotAllowed = function(notAllowed){
-					var currentUrl = $location.url();
+
 					//timeout is required because when using preventDefault on $stateChangeStart, the url is
 					//reverted to it's original location, and no change at this time will override this.
 					$timeout(function(){
-						$injector.invoke(notAllowed,null,{restrictedUrl:currentUrl})
+						$injector.invoke(notAllowed,null,{restrictedUrl:toUrl})
 					},0);
 				}
 			}
