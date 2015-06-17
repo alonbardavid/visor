@@ -250,7 +250,22 @@ describe('visor', function() {
 				expect($location.search().next).toEqual("/private_url");
 			});
 		});
-
+        it('should redirect anonymous users to login if accessing private route after visitng public url', function(){
+            authenticate = function($q){
+                return $q.reject("not authenticated");
+            };
+            module("test.config");
+            inject(function($rootScope,$state,$q,$location,visor,$timeout) {
+                $location.url("/public");
+                $rootScope.$apply();
+                $timeout.flush();
+                $state.go('private');
+                $rootScope.$apply();
+                $timeout.flush();
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toEqual("/private_url");
+            });
+        });
 		it('should not redirect anonymous users to login if accessing public route', function(){
 			authenticate = function($q){
 				return $q.reject("not authenticated");
