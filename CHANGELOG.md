@@ -1,0 +1,26 @@
+<a name"0.0.6"></a>
+### 0.0.6 (2015-06-17)
+
+
+#### Bug Fixes
+
+* **ui-router:** send correct next parameter when visiting a page using $state.go ([f2201a8d](https://github.com/illniyar/visor/commit/f2201a8d), closes [#5](https://github.com/illniyar/visor/issues/5))
+
+<a name"0.0.5"></a>
+### 0.0.5 (2015-06-17)
+
+
+#### Bug Fixes
+
+* **ui-router:** fixed issue with next-url not being added properly with 1.3.0 . ([8bf3c906](https://github.com/illniyar/visor/commit/8bf3c906))
+
+
+
+<a name"0.0.4"></a>
+### 0.0.4 (2015-06-17)
+
+
+#### Bug Fixes
+* **authentication:** fix for arcane circular dependency injection bug. ([d03e6f10](https://github.com/illniyar/visor/commit/d03e6f10))
+* **ie8 support:** visor was not IE8 compatible due to using promise.finally directly. Issue #1 ([82877135](https://github.com/illniyar/visor/commit/82877135))
+
