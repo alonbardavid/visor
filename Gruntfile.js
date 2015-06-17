@@ -94,7 +94,46 @@ module.exports = function (grunt) {
                 tagName: 'v<%= version %>',
                 commitMessage: 'release <%= version %>' ,
                 tagMessage: 'Version <%= version %>',
-                afterBump: ['changelog']
+                beforeRelease: ['changelog']
+            }
+        },
+        gitadd: {
+            release: {
+                files: {
+                    src: ['package.json','bower.json','CHANGELOG.md']
+                }
+            }
+        },
+        gitcommit: {
+            master: {
+                options: {
+                    message: "Publish version <%= pkg.version %>"
+                }
+            }
+        },
+        gitpush: {
+            origin: {
+                options: {
+                    remote: 'origin',
+                    tags: true
+                }
+            },
+        },
+        gittag: {
+            release: {
+                options: {
+                    tag: 'v<%= pkg.version %>',
+                    annotated: true,
+                    message: 'version <%= pkg.version %>'
+                }
+            }
+        },
+        bumpup: {
+            files: ['package.json', 'bower.json'],
+            options: {
+                updateProps: {
+                    pkg: 'package.json'
+                }
             }
         }
     });
@@ -102,6 +141,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify']);
     grunt.registerTask('dist', 'Perform a clean build', ['clean', 'build', 'copy:release']);
     grunt.registerTask('site', 'Build and create site', ['dist', 'copy:site', 'ngdocs:all']);
-    grunt.registerTask('publish-site', 'Build, create site and push to gh-pages', ['site', 'gh-pages', 'clean:gh-pages']);
-    grunt.registerTask('publish','Builds and publishes to all relevent repositories',['publish-site','release'])
+    grunt.registerTask('gh-pages', 'Build, create site and push to gh-pages', ['gh-pages', 'clean:gh-pages']);
+    grunt.registerTask('push-to-git','Add, commit, create tag and push to git',['gitadd:release','gitcommit:master','gittag:release','gitpush:origin']);
+    grunt.registerTask('publish','Builds and publishes to all relevent repositories',
+        ['bumpup:patch','site','changelog','push-to-git'])
 }

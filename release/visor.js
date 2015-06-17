@@ -1,6 +1,6 @@
 /**visor
 * Angular authentication and authorization library
-* @version v0.0.5
+* @version v0.0.9
 * @link  https://github.com/illniyar/visor.git
 * @license MIT License, http://www.opensource.org/licenses/MIT
 */
@@ -882,16 +882,15 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 				$injector.invoke(["$state",function($state){
           // we need to check parent states for permissions as well
 					visorPermissions.getPermissionsFromNext = function(next){
-                        console.log("get permissions")
 						var perms = [];
 						while(next) {
 							if (next.restrict) perms.unshift(next.restrict);
 							if (next.parent) {
-                                next = $state.get(next.parent)
+								next = $state.get(next.parent)
 							} else if(next.name.indexOf(".") >0) {
-                                next = $state.get(next.name.replace(/(.*\.)?([^.]+)\.[^.]*$/,"$2"))
+								next = $state.get(next.name.replace(/(.*\.)?([^.]+)\.[^.]*$/,"$2"))
 							} else {
-                                next = null;
+								next = null;
 							}
 						}
 						return perms;
