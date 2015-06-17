@@ -1,26 +1,26 @@
 {
   "name": "visor",
   "description": "Angular authentication and authorization library",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/illniyar/visor",
-	"main": "./release/visor.js",
-	"dependencies": {
+  "main": "./release/visor.js",
+  "dependencies": {
     "angular": "~1.3.0"
   },
-	"devDependencies": {
-		"angular-ui-router": "~0.2.13",
-		"angular-mocks": "~1.3.0",
-		"angular-route": "~1.3.0",
-		"angular-cookies":"~1.3.0"
-	},
-	"ignore": [
-		"**/.*",
-		"node_modules",
-		"bower_components",
-		"package.json",
-		"Gruntfile.js",
-		"test",
-		"build",
-		"sample"
-	]
+  "devDependencies": {
+    "angular-ui-router": "~0.2.13",
+    "angular-mocks": "~1.3.0",
+    "angular-route": "~1.3.0",
+    "angular-cookies": "~1.3.0"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "package.json",
+    "Gruntfile.js",
+    "test",
+    "build",
+    "sample"
+  ]
 }
