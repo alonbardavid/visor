@@ -1,6 +1,6 @@
 #Visor
 
-## Authentication and authorization library for angular.js [![Build Status](https://travis-ci.org/Illniyar/visor.svg)](https://travis-ci.org/Illniyar/visor)
+## Authentication and authorization library for angular.js [![Build Status](https://travis-ci.org/Illniyar/visor.svg)](https://travis-ci.org/Illniyar/visor)[![Dependency Status](https://gemnasium.com/Illniyar/visor.svg)](https://gemnasium.com/Illniyar/visor)
 ---
 
 Visor is an authentication and authorization framework for [AngularJS](http://angularjs.org).  
