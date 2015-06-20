@@ -138,11 +138,28 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('npm-publish', 'publish to npm.', function() {
+        var npm = require('npm');
+        var done = this.async();
+        grunt.log.writeln('Publishing to NPM');
+        npm.load(function(){
+            npm.commands.publish(['.'],function(e){
+                if (e){
+                    grunt.log.errorln(e);
+                    done(false);
+                } else {
+                    grunt.log.writeln('Publish success');
+                    done();
+                }
+            })
+        })
+
+    });
     grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify']);
     grunt.registerTask('dist', 'Perform a clean build', ['clean', 'build', 'copy:release']);
     grunt.registerTask('site', 'Build and create site', ['dist', 'copy:site', 'ngdocs:all']);
     grunt.registerTask('gh-pages', 'Build, create site and push to gh-pages', ['gh-pages', 'clean:gh-pages']);
     grunt.registerTask('push-to-git','Add, commit, create tag and push to git',['gitadd:release','gitcommit:master','gittag:release','gitpush:origin']);
     grunt.registerTask('publish','Builds and publishes to all relevent repositories',
-        ['bumpup:patch','site','changelog','push-to-git'])
+        ['bumpup:patch','site','changelog','push-to-git','npm-publish'])
 }
