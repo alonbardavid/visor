@@ -1,13 +1,13 @@
-describe("visor.ngRoute", function () {
-  describe("route change", function () {
+describe('visor.ngRoute', function () {
+  describe('route change', function () {
     var defer = null;
-    angular.module("test.routes", ['visor.ngRoute', 'ngRoute']).config(function ($routeProvider, visorPermissionsProvider) {
+    angular.module('test.routes', ['visor.ngRoute', 'ngRoute']).config(function ($routeProvider, visorPermissionsProvider) {
       defer = null;
-      $routeProvider.when("/first", {
+      $routeProvider.when('/first', {
         restrict: function () {
           return true;
         }
-      }).when("/deny", {
+      }).when('/deny', {
         restrict: function () {
           return false;
         }
@@ -17,30 +17,30 @@ describe("visor.ngRoute", function () {
         return defer.promise;
       });
     });
-    beforeEach(module("test.routes"));
+    beforeEach(module('test.routes'));
 
-    it("should wait to change route until delay called", inject(function ($location, $route, $rootScope) {
+    it('should wait to change route until delay called', inject(function ($location, $route, $rootScope) {
       var successCounter = 0;
-      $rootScope.$on("$routeChangeSuccess", function () {
+      $rootScope.$on('$routeChangeSuccess', function () {
         successCounter++;
       });
-      $location.url("/first");
+      $location.url('/first');
       $rootScope.$apply();
       expect(successCounter).toEqual(0);
-      defer.resolve("");
+      defer.resolve('');
       $rootScope.$apply();
       expect(successCounter).toEqual(1);
-      expect($location.url()).toEqual("/first");
-      expect($route.current.originalPath).toEqual("/first");
+      expect($location.url()).toEqual('/first');
+      expect($route.current.originalPath).toEqual('/first');
     }));
 
-    it("should stop route change when permission rejected", inject(function ($location, $route, $rootScope) {
+    it('should stop route change when permission rejected', inject(function ($location, $route, $rootScope) {
       var errorCounter = 0;
-      $rootScope.$on("$routeChangeError", function () {
+      $rootScope.$on('$routeChangeError', function () {
         errorCounter++;
       });
       expect(errorCounter).toEqual(0);
-      $location.url("/deny");
+      $location.url('/deny');
       $rootScope.$apply();
       defer.resolve(false);
       $rootScope.$apply();
@@ -48,10 +48,10 @@ describe("visor.ngRoute", function () {
     }));
   });
 
-  it("should not change anything if ng-route is not depended on", function () {
-    module("visor.permissions", "visor.ngRoute");
+  it('should not change anything if ng-route is not depended on', function () {
+    module('visor.permissions', 'visor.ngRoute');
     inject(function ($location, $rootScope, visorPermissions) {
-      $location.url("/something");
+      $location.url('/something');
       $rootScope.$apply();
       visorPermissions.onRouteChange({
         restrict: function () {

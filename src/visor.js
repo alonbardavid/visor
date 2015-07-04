@@ -1,5 +1,5 @@
 (function () {
-  "use strict";
+  'use strict';
 
   /**
    * @ngdoc overview
@@ -10,11 +10,11 @@
    *
    * `Visor` is an authentication and authorization module.
    *
-   * <div doc-module-components="visor"></div>
+   * <div doc-module-components='visor'></div>
    *
    * See {@link visor.visor `visor`} for usage.
    */
-  angular.module("visor", ["visor.permissions", "visor.ui-router", "visor.ngRoute", "delayLocationChange"])
+  angular.module('visor', ['visor.permissions', 'visor.ui-router', 'visor.ngRoute', 'delayLocationChange'])
 
   /**
    * @ngdoc service
@@ -28,15 +28,15 @@
    * @example
    *
    * <pre>
-   *   angular.moudle("myModule",["visor"])
+   *   angular.moudle('myModule',['visor'])
    *   .config(function($stateProvider,authenticatedOnly){
-   *     $stateProvider.state("private",{
+   *     $stateProvider.state('private',{
    *       restrict: authenticatedOnly
    *     })
    *   }
    * </pre>
    */
-    .constant("authenticatedOnly", function (authData) {
+    .constant('authenticatedOnly', function (authData) {
       return !!authData;
     })
 
@@ -52,15 +52,15 @@
    * @example
    *
    * <pre>
-   *   angular.moudle("myModule",["visor"])
+   *   angular.moudle('myModule',['visor'])
    *   .config(function($stateProvider,notForAuthenticated){
-   *     $stateProvider.state("private",{
+   *     $stateProvider.state('private',{
    *       restrict: notForAuthenticated
    *     })
    *   }
    * </pre>
    */
-    .constant("notForAuthenticated", function (authData) {
+    .constant('notForAuthenticated', function (authData) {
       return authData === undefined;
     })
 
@@ -81,23 +81,23 @@
    * @example
    *
    * <pre>
-   *   angular.moudle("myModule",["visor"])
+   *   angular.moudle('myModule',['visor'])
    *   .config(function(visorProvider){
    *     visorProvider.authenticate = function($http){
-   *      return $http.get("/api/user/me").then(function(res){
+   *      return $http.get('/api/user/me').then(function(res){
    *        return res.data;
    *      })
    *     };
    *   }
    * </pre>
    */
-    .provider("visor", [function () {
+    .provider('visor', [function () {
       function addNextToUrl(url, $location, restrictedUrl) {
         if (config.shouldAddNext) {
-          if (url.indexOf("?") >= 0) {
-            return url.replace(/\?/, "?next=" + encodeURIComponent(restrictedUrl) + "&");
+          if (url.indexOf('?') >= 0) {
+            return url.replace(/\?/, '?next=' + encodeURIComponent(restrictedUrl) + '&');
           }
-          return url + "?next=" + encodeURIComponent(restrictedUrl);
+          return url + '?next=' + encodeURIComponent(restrictedUrl);
         } else {
           return url;
         }
@@ -129,7 +129,7 @@
        *
        * Defaults to `/login`
        */
-      config.loginRoute = "/login";
+      config.loginRoute = '/login';
       /**
        * @ngdoc property
        * @name visor.visorProvider#homeRoute
@@ -142,7 +142,7 @@
        *
        * Defaults to `/`
        */
-      config.homeRoute = "/";
+      config.homeRoute = '/';
       /**
        * @ngdoc property
        * @name visor.visorProvider#notAuthorizedRoute
@@ -155,7 +155,7 @@
        *
        * Defaults to `/access_denied`
        */
-      config.notAuthorizedRoute = "/access_denied";
+      config.notAuthorizedRoute = '/access_denied';
       /**
        * @ngdoc property
        * @name visor.visorProvider#shouldAddNext
@@ -189,10 +189,10 @@
        * @example
        *
        * <pre>
-       *   angular.moudle("myModule",["visor"])
+       *   angular.moudle('myModule',['visor'])
        *   .config(function(visorProvider,$stateProvider){
        *     visorProvider.authenticate = function($http){
-       *      return $http.get("/api/user/me").then(function(res){
+       *      return $http.get('/api/user/me').then(function(res){
        *        return res.data;
        *      });
        *     };
@@ -200,7 +200,7 @@
        * </pre>
        */
       config.authenticate = function () {
-        throw new Error("visorProvider.authenticate must be defined to use visor");
+        throw new Error('visorProvider.authenticate must be defined to use visor');
       };
       /**
        * @ngdoc function
@@ -218,18 +218,18 @@
        * @example
        *
        * <pre>
-       *   angular.moudle("myModule",["visor"])
+       *   angular.moudle('myModule',['visor'])
        *   .config(function(visorProvider,$stateProvider){
        *    //redirect to an error page instead of login
        *     visorProvider.doOnNotAuthenticated = function(restrictedUrl,$state){
-       *      $state.go("error",{
-       *        message: "you need to be logged in to access " + restrictedUrl
+       *      $state.go('error',{
+       *        message: 'you need to be logged in to access ' + restrictedUrl
        *      })
        *     };
        *   });
        * </pre>
        */
-      config.doOnNotAuthenticated = ["$location", "restrictedUrl", function ($location, restrictedUrl) {
+      config.doOnNotAuthenticated = ['$location', 'restrictedUrl', function ($location, restrictedUrl) {
         $location.url(addNextToUrl(config.loginRoute, $location, restrictedUrl))
       }];
       /**
@@ -245,16 +245,16 @@
        * @example
        *
        * <pre>
-       *   angular.moudle("myModule",["visor"])
+       *   angular.moudle('myModule',['visor'])
        *   .config(function(visorProvider,$stateProvider){
        *     //redirect to a new user welcome page
        *     visorProvider.doAfterManualAuthentication = function($state){
-       *      $state.go("new_user.welcome")
+       *      $state.go('new_user.welcome')
        *     };
        *   });
        * </pre>
        */
-      config.doAfterManualAuthentication = ["$location", function ($location) {
+      config.doAfterManualAuthentication = ['$location', function ($location) {
         $location.url($location.search().next || config.homeRoute);
       }];
       /**
@@ -272,18 +272,18 @@
        * @example
        *
        * <pre>
-       *   angular.moudle("myModule",["visor"])
+       *   angular.moudle('myModule',['visor'])
        *   .config(function(visorProvider,$stateProvider){
        *    //redirect to an error page with the restricted url message
        *     visorProvider.doOnNotAuthorized = function(restrictedUrl,$state){
-       *      $state.go("error",{
-       *        message: "you are not allowed to access " + restrictedUrl
+       *      $state.go('error',{
+       *        message: 'you are not allowed to access ' + restrictedUrl
        *      })
        *     };
        *   });
        * </pre>
        */
-      config.doOnNotAuthorized = ["$location", function ($location) {
+      config.doOnNotAuthorized = ['$location', function ($location) {
         $location.url(config.notAuthorizedRoute)
       }];
 
@@ -309,21 +309,21 @@
        * @example
        *
        * <pre>
-       *   angular.moudle("myModule",["visor"])
+       *   angular.moudle('myModule',['visor'])
        *   .config(function(visorProvider,$stateProvider){
        *     visorProvider.authenticate = function($http){
-       *      return $http.get("/api/user/me").then(function(res){
+       *      return $http.get('/api/user/me').then(function(res){
        *        return res.data;
        *      })
        *     };
-       *     $stateProvider.state("private",{
+       *     $stateProvider.state('private',{
        *       restrict: function(user){ return user && user.can_see_private;}
        *     })
        *   }
        * </pre>
        */
 
-      this.$get = ["$injector", "$q", "$rootScope", "$location", "visorPermissions", function ($injector, $q, $rootScope, $location, visorPermissions) {
+      this.$get = ['$injector', '$q', '$rootScope', '$location', 'visorPermissions', function ($injector, $q, $rootScope, $location, visorPermissions) {
         // keeps the original auth promise so we won't call authenticate twice.
         var _authenticationPromise = false;
 
@@ -376,7 +376,7 @@
            *
            * Typical use is to call this function after a use logs in to the system.
            *
-           * <div class="alert alert-info">
+           * <div class='alert alert-info'>
            * **Note**: `authData` should be the identical to the result of the promise returned from {@link visor.visorProvider#authenticate `visorProvider.authenticate`}.
            * </div>
            *
@@ -440,16 +440,16 @@
         return Visor;
       }]
     }])
-    .run(["visor", "delayLocationChange", function (visor, delayLocationChange) {
+    .run(['visor', 'delayLocationChange', function (visor, delayLocationChange) {
       if (visor.config.authenticateOnStartup) {
         delayLocationChange(visor.authenticate())
       }
     }])
-    .config(["visorPermissionsProvider", function (visorPermissionsProvider) {
-      visorPermissionsProvider.doBeforeFirstCheck.push(["visor", function (Visor) {
+    .config(['visorPermissionsProvider', function (visorPermissionsProvider) {
+      visorPermissionsProvider.doBeforeFirstCheck.push(['visor', function (Visor) {
         return Visor.authenticate();
       }]);
-      visorPermissionsProvider.onNotAllowed = ["visor", "restrictedUrl", function (Visor, restrictedUrl) {
+      visorPermissionsProvider.onNotAllowed = ['visor', 'restrictedUrl', function (Visor, restrictedUrl) {
         Visor.onNotAllowed(restrictedUrl);
       }]
     }])

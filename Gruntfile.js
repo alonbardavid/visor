@@ -16,19 +16,19 @@ module.exports = function (grunt) {
     },
     clean: {
       dist: ['<%= builddir %>', '<%=sitedir %>'],
-      "gh-pages": ['.grunt']
+      'gh-pages': ['.grunt']
     },
     concat: {
       options: {
         banner: '<%=meta.banner\n\n%>' +
-        'if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){\n' +
+        'if (typeof module !== \'undefined\' && typeof exports !== \'undefined\' && module.exports === exports){\n' +
         ' module.exports = \'visor\';\n' +
         '}\n\n' +
         '(function (window, angular, undefined) {\n',
         footer: '})(window, window.angular);'
       },
       build: {
-        src: "src/*.js",
+        src: 'src/*.js',
         dest: '<%= builddir %>/<%= module_name %>.js'
       }
     },
@@ -68,8 +68,8 @@ module.exports = function (grunt) {
       release: {
         files: [{
           expand: true,
-          src: ["visor.js", "visor.min.js"],
-          cwd: "<%=builddir%>/",
+          src: ['visor.js', 'visor.min.js'],
+          cwd: '<%=builddir%>/',
           dest: '<%=releasedir%>/'
         }]
       },
@@ -107,7 +107,7 @@ module.exports = function (grunt) {
     gitcommit: {
       master: {
         options: {
-          message: "Publish version <%= pkg.version %>"
+          message: 'Publish version <%= pkg.version %>'
         }
       }
     },

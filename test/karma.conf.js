@@ -12,7 +12,7 @@ module.exports = function (config) {
 
     autoWatch: true,
     singleRun: false,
-    basePath: "../",
+    basePath: '../',
 
     reporters: ['spec'],
     frameworks: ['jasmine'],

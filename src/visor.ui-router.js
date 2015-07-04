@@ -13,12 +13,12 @@
     .run(['$rootScope', 'visorPermissions', '$injector', '$timeout', '$location', function ($rootScope, visorPermissions, $injector, $timeout, $location) {
       var uiModuleExists = false;
       try {
-        $injector.get("$state");
+        $injector.get('$state');
         uiModuleExists = true;
       } catch (e) {
       }
       if (uiModuleExists) {
-        $injector.invoke(["$state", function ($state) {
+        $injector.invoke(['$state', function ($state) {
           // we need to check parent states for permissions as well
           visorPermissions.getPermissionsFromNext = function (next) {
             var perms = [];
@@ -26,15 +26,15 @@
               if (next.restrict) perms.unshift(next.restrict);
               if (next.parent) {
                 next = $state.get(next.parent)
-              } else if (next.name.indexOf(".") > 0) {
-                next = $state.get(next.name.replace(/(.*\.)?([^.]+)\.[^.]*$/, "$2"))
+              } else if (next.name.indexOf('.') > 0) {
+                next = $state.get(next.name.replace(/(.*\.)?([^.]+)\.[^.]*$/, '$2'))
               } else {
                 next = null;
               }
             }
             return perms;
           }
-          var $urlRouter = $injector.get("$urlRouter");
+          var $urlRouter = $injector.get('$urlRouter');
           var toUrl = null;
           var bypass = false;
           $rootScope.$on('$stateChangeStart', function (e, toState, toParams) {
@@ -49,7 +49,7 @@
                 $state.go(toState, toParams);
               })
             });
-            if (!shouldContinue || shouldContinue === "delayed") {
+            if (!shouldContinue || shouldContinue === 'delayed') {
               e.preventDefault();
             }
           });

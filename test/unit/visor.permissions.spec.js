@@ -3,10 +3,10 @@ var VOID = function () {
 };
 var NEXT = {restrict: VOID};
 
-describe("visor.permissions", function () {
-  describe("doBeforeFirstCheck", function () {
+describe('visor.permissions', function () {
+  describe('doBeforeFirstCheck', function () {
     var doBeforeFunctions = [];
-    angular.module("config.do-before", ["visor.permissions"]).config(function (visorPermissionsProvider) {
+    angular.module('config.do-before', ['visor.permissions']).config(function (visorPermissionsProvider) {
       visorPermissionsProvider.doBeforeFirstCheck =
         visorPermissionsProvider.doBeforeFirstCheck.concat(doBeforeFunctions)
     })
@@ -14,14 +14,14 @@ describe("visor.permissions", function () {
       doBeforeFunctions = [];
     });
 
-    it("should call doBeforeFirstCheck on first change", function () {
+    it('should call doBeforeFirstCheck on first change', function () {
       var called = false;
       doBeforeFunctions.push(function ($q) {
         called = true;
-        return $q.when("");
+        return $q.when('');
       });
 
-      module("config.do-before");
+      module('config.do-before');
       inject(function ($rootScope, visorPermissions) {
         $rootScope.$apply();
         expect(called).toEqual(false);
@@ -30,17 +30,17 @@ describe("visor.permissions", function () {
         expect(called).toEqual(true);
       });
     });
-    it("should call multiple doBeforeFirstCheck", function () {
+    it('should call multiple doBeforeFirstCheck', function () {
       var calledOne = false, calledTwo = false;
       doBeforeFunctions.push(function ($q) {
         calledOne = true;
-        return $q.when("");
+        return $q.when('');
       });
       doBeforeFunctions.push(function ($q) {
         calledTwo = true;
-        return $q.when("");
+        return $q.when('');
       });
-      module("config.do-before");
+      module('config.do-before');
       inject(function ($rootScope, visorPermissions) {
         $rootScope.$apply();
         expect(calledOne).toEqual(false);
@@ -51,14 +51,14 @@ describe("visor.permissions", function () {
         expect(calledTwo).toEqual(true);
       });
     });
-    it("should wait until doBeforeFirstCheck finishes before checking permissions", function () {
+    it('should wait until doBeforeFirstCheck finishes before checking permissions', function () {
       var defer = null, called = false;
       doBeforeFunctions.push(function ($q) {
         defer = $q.defer();
         return defer.promise;
       });
 
-      module("config.do-before");
+      module('config.do-before');
       inject(function ($rootScope, visorPermissions, $q) {
         var next = {
           restrict: function () {
@@ -74,14 +74,14 @@ describe("visor.permissions", function () {
         expect(called).toEqual(true);
       });
     })
-    it("should not call doBeforeFirstCheck again", function () {
+    it('should not call doBeforeFirstCheck again', function () {
       var calledCount = 0;
       doBeforeFunctions.push(function ($q) {
         calledCount++;
-        return $q.when("");
+        return $q.when('');
       });
 
-      module("config.do-before");
+      module('config.do-before');
       inject(function ($rootScope, visorPermissions) {
         visorPermissions.onRouteChange(NEXT, VOID)
         $rootScope.$apply();
@@ -91,10 +91,10 @@ describe("visor.permissions", function () {
         expect(calledCount).toEqual(1);
       });
     });
-    it("should allow having no doBeforeFirstCheck", function () {
+    it('should allow having no doBeforeFirstCheck', function () {
       var called = false;
 
-      module("visor.permissions");
+      module('visor.permissions');
       inject(function ($rootScope, visorPermissions) {
         var next = {
           restrict: function () {
@@ -108,9 +108,9 @@ describe("visor.permissions", function () {
       });
     });
 
-    it("should call doBeforeFirstCheck only when first accessing route with permission", function () {
+    it('should call doBeforeFirstCheck only when first accessing route with permission', function () {
       var called = false;
-      module("visor.permissions");
+      module('visor.permissions');
       inject(function ($rootScope, visorPermissions) {
         var next = {
           restrict: function () {
@@ -128,18 +128,18 @@ describe("visor.permissions", function () {
     });
   });
 
-  describe("allowed/notallowed", function () {
+  describe('allowed/notallowed', function () {
     beforeEach(function () {
-      angular.module("test.allowed-notallowed", ["visor.permissions"])
+      angular.module('test.allowed-notallowed', ['visor.permissions'])
         .config(function (visorPermissionsProvider) {
           visorPermissionsProvider.getPermissionsFromNext = function (next) {
             return next.permissions || [next.permission];
           }
         });
-      module("test.allowed-notallowed")
+      module('test.allowed-notallowed')
     });
 
-    it("should allow access if permission returns true", inject(function ($rootScope, visorPermissions) {
+    it('should allow access if permission returns true', inject(function ($rootScope, visorPermissions) {
       var success = false;
       var next = {
         permission: function () {
@@ -154,7 +154,7 @@ describe("visor.permissions", function () {
       $rootScope.$apply();
       expect(success).toEqual(true);
     }));
-    it("should deny access if permission returns false", inject(function ($rootScope, visorPermissions) {
+    it('should deny access if permission returns false', inject(function ($rootScope, visorPermissions) {
       var rejected = false;
       var next = {
         permission: function () {
@@ -170,7 +170,7 @@ describe("visor.permissions", function () {
       expect(rejected).toEqual(true);
     }));
 
-    it("should deny access if first permission is false and second true", inject(function ($rootScope, visorPermissions) {
+    it('should deny access if first permission is false and second true', inject(function ($rootScope, visorPermissions) {
       var rejected = false;
       var next = {
         permissions: [function () {
@@ -187,7 +187,7 @@ describe("visor.permissions", function () {
       $rootScope.$apply();
       expect(rejected).toEqual(true);
     }));
-    it("should deny access if first permission is true and second false", inject(function ($rootScope, visorPermissions) {
+    it('should deny access if first permission is true and second false', inject(function ($rootScope, visorPermissions) {
       var rejected = false;
       var next = {
         permissions: [function () {
@@ -204,7 +204,7 @@ describe("visor.permissions", function () {
       $rootScope.$apply();
       expect(rejected).toEqual(true);
     }));
-    it("should allow access if all permissions return true", inject(function ($rootScope, visorPermissions) {
+    it('should allow access if all permissions return true', inject(function ($rootScope, visorPermissions) {
       var success = false;
       var next = {
         permissions: [function () {
@@ -223,19 +223,19 @@ describe("visor.permissions", function () {
     }));
 
   });
-  describe("doOnNotAllowed", function () {
+  describe('doOnNotAllowed', function () {
     var notAllowedCalled = false;
-    angular.module("config.notAllowed", ["visor.permissions"]).config(function (visorPermissionsProvider) {
+    angular.module('config.notAllowed', ['visor.permissions']).config(function (visorPermissionsProvider) {
       visorPermissionsProvider.onNotAllowed = function () {
         notAllowedCalled = true;
       };
     });
     beforeEach(function () {
-      module("config.notAllowed");
+      module('config.notAllowed');
       notAllowedCalled = false;
     });
 
-    it("should call doOnNotAllowed if permission returns false", inject(function ($rootScope, visorPermissions) {
+    it('should call doOnNotAllowed if permission returns false', inject(function ($rootScope, visorPermissions) {
       var next = {
         restrict: function () {
           return false;
@@ -246,7 +246,7 @@ describe("visor.permissions", function () {
       expect(notAllowedCalled).toEqual(true);
     }));
 
-    it("should notcall doOnNotAllowed if permission returns true", inject(function ($rootScope, visorPermissions) {
+    it('should notcall doOnNotAllowed if permission returns true', inject(function ($rootScope, visorPermissions) {
       var next = {
         restrict: function () {
           return true;
@@ -257,11 +257,11 @@ describe("visor.permissions", function () {
       expect(notAllowedCalled).toEqual(false);
     }));
   });
-  describe("getPermissionsFromNext", function () {
-    it("should use next.permission getPermissionsFromNext if not overriden", function () {
+  describe('getPermissionsFromNext', function () {
+    it('should use next.permission getPermissionsFromNext if not overriden', function () {
       var called = false;
 
-      module("visor.permissions");
+      module('visor.permissions');
       inject(function ($rootScope, visorPermissions) {
         var next = {
           restrict: function () {
@@ -274,8 +274,8 @@ describe("visor.permissions", function () {
         expect(called).toEqual(true);
       });
     });
-    it("should allow replacing getPermissionsFormNext", function () {
-      angular.module("config.getPerm", ["visor.permissions"]).config(function (visorPermissionsProvider) {
+    it('should allow replacing getPermissionsFormNext', function () {
+      angular.module('config.getPerm', ['visor.permissions']).config(function (visorPermissionsProvider) {
         visorPermissionsProvider.getPermissionsFromNext = function (next) {
           return [next.something];
         };
@@ -283,7 +283,7 @@ describe("visor.permissions", function () {
       var called = false;
       var shouldNotBeCalled = false;
 
-      module("config.getPerm");
+      module('config.getPerm');
       inject(function ($rootScope, visorPermissions) {
         var next = {
           something: function () {
@@ -301,13 +301,13 @@ describe("visor.permissions", function () {
       });
     });
   });
-  describe("invokeParameters", function () {
-    it("should send invoke parameters to permission checks", function () {
-      angular.module("config.invoke", ["visor.permissions"]).config(function (visorPermissionsProvider) {
-        visorPermissionsProvider.invokeParameters = ["param to invoke"];
+  describe('invokeParameters', function () {
+    it('should send invoke parameters to permission checks', function () {
+      angular.module('config.invoke', ['visor.permissions']).config(function (visorPermissionsProvider) {
+        visorPermissionsProvider.invokeParameters = ['param to invoke'];
       });
       var invoked = null;
-      module("config.invoke");
+      module('config.invoke');
       inject(function ($rootScope, visorPermissions) {
         visorPermissions.onRouteChange({
           restrict: function (param) {
@@ -316,14 +316,14 @@ describe("visor.permissions", function () {
           }
         }, VOID);
         $rootScope.$apply();
-        expect(invoked).toEqual("param to invoke");
+        expect(invoked).toEqual('param to invoke');
       });
     });
-    it("should allow overriding invoke parameters in runtime", function () {
+    it('should allow overriding invoke parameters in runtime', function () {
       var invoked = null;
-      module("visor.permissions");
+      module('visor.permissions');
       inject(function ($rootScope, visorPermissions) {
-        visorPermissions.invokeParameters = ["param to invoke"];
+        visorPermissions.invokeParameters = ['param to invoke'];
         visorPermissions.onRouteChange({
           restrict: function (param) {
             invoked = param;
@@ -331,7 +331,7 @@ describe("visor.permissions", function () {
           }
         }, VOID);
         $rootScope.$apply();
-        expect(invoked).toEqual("param to invoke");
+        expect(invoked).toEqual('param to invoke');
       });
     });
   });

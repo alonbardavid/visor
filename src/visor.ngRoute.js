@@ -14,7 +14,7 @@
     .run(['$rootScope', 'visorPermissions', '$injector', function ($rootScope, visorPermissions, $injector) {
       var ngRouteModuleExists = false;
       try {
-        $injector.get("$route");
+        $injector.get('$route');
         ngRouteModuleExists = true;
       } catch (e) {
       }

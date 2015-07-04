@@ -1,7 +1,7 @@
-describe("delayLocationChange", function () {
+describe('delayLocationChange', function () {
   var firstCalled, secondCalled;
   var firstDefer, secondDefer;
-  angular.module("delayLocationChange.test", ["delayLocationChange"])
+  angular.module('delayLocationChange.test', ['delayLocationChange'])
     .run(function (delayLocationChange, $q) {
       firstCalled = secondCalled = 0;
       firstDefer = $q.defer();
@@ -9,11 +9,11 @@ describe("delayLocationChange", function () {
       delayLocationChange(firstDefer.promise);
       delayLocationChange(secondDefer.promise);
     })
-  beforeEach(module("delayLocationChange.test"));
+  beforeEach(module('delayLocationChange.test'));
 
-  it("should stop location change until promises is resolved", inject(function ($location, $rootScope) {
+  it('should stop location change until promises is resolved', inject(function ($location, $rootScope) {
     var successes = 0;
-    $rootScope.$on("$locationChangeSuccess", function () {
+    $rootScope.$on('$locationChangeSuccess', function () {
       successes++;
     });
     $rootScope.$apply();
