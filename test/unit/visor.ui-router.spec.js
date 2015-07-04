@@ -83,6 +83,50 @@ describe('visor.ui-router', function () {
       expect(calls).toEqual(['parent', 'child'])
     }));
   });
+  describe('permissions inheritance', function () {
+    var calls = [];
+    angular.module('test.states.permissions.inheritance', ['visor.ui-router', 'ui.router']).config(function ($stateProvider, visorPermissionsProvider) {
+      $stateProvider
+        .state('parent', {
+          url: '/parent',
+          restrict: function () {
+            calls.push('parent');
+            return true;
+          }
+        })
+        .state('parent.child', {
+          url: '/child',
+          restrict: function () {
+            calls.push('child');
+            return true;
+          }
+        })
+        .state('parent.child.grandchild', {
+          url: '/grandchild',
+          restrict: function () {
+            calls.push('grandchild');
+            return true;
+          }
+        })
+        .state('deny', {
+          url: '/deny',
+          restrict: function () {
+            calls.push('deny');
+            return false;
+          }
+        });
+
+    });
+    beforeEach(function () {
+      calls = [];
+      module('test.states.permissions.inheritance')
+    });
+    it('should check permission for parent route', inject(function ($state, $rootScope, $location) {
+      $location.url('/parent/child/grandchild');
+      $rootScope.$apply();
+      expect(calls).toEqual(['parent', 'child', 'grandchild'])
+    }));
+  });
   it('should not change anything if ui-router is not depended on', function () {
     module('visor.permissions', 'visor.ui-router');
     inject(function ($location, $rootScope, visorPermissions) {

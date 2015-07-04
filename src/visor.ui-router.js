@@ -27,7 +27,10 @@
               if (next.parent) {
                 next = $state.get(next.parent)
               } else if (next.name.indexOf('.') > 0) {
-                next = $state.get(next.name.replace(/(.*\.)?([^.]+)\.[^.]*$/, '$2'))
+                var chain = next.name.split('.');
+                chain.pop(); //remove the leftmost
+                var parent = chain.join('.');
+                next = $state.get(parent);
               } else {
                 next = null;
               }
