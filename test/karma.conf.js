@@ -1,7 +1,7 @@
-module.exports = function(config){
+module.exports = function (config) {
   config.set({
 
-    files : [
+    files: [
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
@@ -10,20 +10,20 @@ module.exports = function(config){
       'test/unit/**/*.js'
     ],
 
-    autoWatch : false,
-    singleRun: true,
-		basePath:"../",
+    autoWatch: true,
+    singleRun: false,
+    basePath: "../",
 
     reporters: ['spec'],
     frameworks: ['jasmine'],
 
-    browsers : ['PhantomJS'],
+    browsers: ['PhantomJS'],
 
-    plugins : [
-            'karma-phantomjs-launcher',
-            'karma-jasmine',
-            'karma-spec-reporter'
-            ]
+    plugins: [
+      'karma-phantomjs-launcher',
+      'karma-jasmine',
+      'karma-spec-reporter'
+    ]
 
   });
 };

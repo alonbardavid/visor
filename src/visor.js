@@ -1,6 +1,4 @@
-
-
-(function(){
+(function () {
   "use strict";
 
   /**
@@ -16,7 +14,7 @@
    *
    * See {@link visor.visor `visor`} for usage.
    */
-  angular.module("visor",["visor.permissions","visor.ui-router","visor.ngRoute","delayLocationChange"])
+  angular.module("visor", ["visor.permissions", "visor.ui-router", "visor.ngRoute", "delayLocationChange"])
 
   /**
    * @ngdoc service
@@ -38,9 +36,9 @@
    *   }
    * </pre>
    */
-  .constant("authenticatedOnly",function(authData){
+    .constant("authenticatedOnly", function (authData) {
       return !!authData;
-  })
+    })
 
   /**
    * @ngdoc service
@@ -62,9 +60,9 @@
    *   }
    * </pre>
    */
-  .constant("notForAuthenticated",function(authData){
+    .constant("notForAuthenticated", function (authData) {
       return authData === undefined;
-  })
+    })
 
   /**
    * @ngdoc service
@@ -93,17 +91,18 @@
    *   }
    * </pre>
    */
-  .provider("visor",[function(){
-      function addNextToUrl(url,$location,restrictedUrl){
-          if (config.shouldAddNext){
-              if (url.indexOf("?") >=0) {
-                  return url.replace(/\?/,"?next=" + encodeURIComponent(restrictedUrl) + "&");
-              }
-              return url + "?next=" + encodeURIComponent(restrictedUrl);
-          } else {
-              return url;
+    .provider("visor", [function () {
+      function addNextToUrl(url, $location, restrictedUrl) {
+        if (config.shouldAddNext) {
+          if (url.indexOf("?") >= 0) {
+            return url.replace(/\?/, "?next=" + encodeURIComponent(restrictedUrl) + "&");
           }
+          return url + "?next=" + encodeURIComponent(restrictedUrl);
+        } else {
+          return url;
+        }
       }
+
       var config = this;
       /**
        * @ngdoc property
@@ -200,8 +199,8 @@
        *   });
        * </pre>
        */
-      config.authenticate = function(){
-          throw new Error("visorProvider.authenticate must be defined to use visor");
+      config.authenticate = function () {
+        throw new Error("visorProvider.authenticate must be defined to use visor");
       };
       /**
        * @ngdoc function
@@ -230,8 +229,8 @@
        *   });
        * </pre>
        */
-      config.doOnNotAuthenticated = ["$location","restrictedUrl",function($location,restrictedUrl){
-          $location.url(addNextToUrl(config.loginRoute,$location,restrictedUrl))
+      config.doOnNotAuthenticated = ["$location", "restrictedUrl", function ($location, restrictedUrl) {
+        $location.url(addNextToUrl(config.loginRoute, $location, restrictedUrl))
       }];
       /**
        * @ngdoc function
@@ -255,8 +254,8 @@
        *   });
        * </pre>
        */
-      config.doAfterManualAuthentication = ["$location",function($location){
-          $location.url($location.search().next || config.homeRoute);
+      config.doAfterManualAuthentication = ["$location", function ($location) {
+        $location.url($location.search().next || config.homeRoute);
       }];
       /**
        * @ngdoc function
@@ -284,8 +283,8 @@
        *   });
        * </pre>
        */
-      config.doOnNotAuthorized =["$location",function($location){
-          $location.url(config.notAuthorizedRoute)
+      config.doOnNotAuthorized = ["$location", function ($location) {
+        $location.url(config.notAuthorizedRoute)
       }];
 
 
@@ -324,17 +323,20 @@
        * </pre>
        */
 
-      this.$get = ["$injector","$q","$rootScope","$location","visorPermissions",function($injector,$q,$rootScope,$location,visorPermissions){
+      this.$get = ["$injector", "$q", "$rootScope", "$location", "visorPermissions", function ($injector, $q, $rootScope, $location, visorPermissions) {
         // keeps the original auth promise so we won't call authenticate twice.
         var _authenticationPromise = false;
+
         function onAuthenticationSuccess(authData) {
-            Visor.authData =authData;
-            visorPermissions.invokeParameters = [Visor.authData];
+          Visor.authData = authData;
+          visorPermissions.invokeParameters = [Visor.authData];
         }
-        function onAuthenticationFailed(){
-            Visor.authData = undefined;
-            visorPermissions.invokeParameters = [];
+
+        function onAuthenticationFailed() {
+          Visor.authData = undefined;
+          visorPermissions.invokeParameters = [];
         }
+
         var Visor = {
           /**
            *
@@ -349,106 +351,106 @@
            * @returns {promise} Promise that will always resolve as true, with the value returned from {@link visor.visorProvider#authenticate `visorProvider.authenticate`}.
            *    If {@link visor.visorProvider#authenticate `visorProvider.authenticate`} failed, the promise will resolve with `undefined`.
            */
-            authenticate:function(retry){
-                if (_authenticationPromise && !retry) {
-                    return  _authenticationPromise;
-                }
-                var deferred = $q.defer();
-                _authenticationPromise = deferred.promise;
-                $injector.invoke(config.authenticate)
-                    .then(onAuthenticationSuccess,onAuthenticationFailed)
-                    ['finally'](function(){
-                        deferred.resolve(Visor.authData)
-                    });
-                return deferred.promise;
-            },
-            /**
-             * @ngdoc function
-             * @name visor.visor#setAuthenticated
-             * @methodOf visor.visor
-             *
-             * @description
-             *
-             *
-             * Notify `visor` that an authentication was successful.
-             *
-             * Typical use is to call this function after a use logs in to the system.
-             *
-             * <div class="alert alert-info">
-             * **Note**: `authData` should be the identical to the result of the promise returned from {@link visor.visorProvider#authenticate `visorProvider.authenticate`}.
-             * </div>
-             *
-             *
-             * @param {Any} authData The authentication data to be used in future restrict functions.
-             */
-            setAuthenticated: function(authData){
-                onAuthenticationSuccess(authData);
-                _authenticationPromise = $q.when(authData);
-                $injector.invoke(config.doAfterManualAuthentication,null,{authData:authData});
-            },
-            /**
-             * @ngdoc function
-             * @name visor.visor#isAuthenticated
-             * @methodOf visor.visor
-             *
-             * @description
-             *
-             * Determine if user was successfuly authenticated.
-             *
-             *
-             * @returns {boolean} True if the user was authenticated. False otherwise.
-             */
-            isAuthenticated: function(){
-                return !!Visor.authData;
-            },
-            /**
-             *
-             * Notify visor that a use tried to access a url that is restricted to it.
-             *
-             * **Note**: This function was intended for internal use.
-             *
-             *
-             * @param {string} restrictedUrl The url that the user was restricted access to.
-             *
-             */
-            onNotAllowed: function(restrictedUrl){
-                if (Visor.isAuthenticated()) {
-                    $injector.invoke(config.doOnNotAuthorized,null,{restrictedUrl:restrictedUrl});
-                } else {
-                    $injector.invoke(config.doOnNotAuthenticated,null,{restrictedUrl:restrictedUrl});
-                }
-            },
-            /**
-             * @ngdoc function
-             * @name visor.visor#setUnauthenticated
-             * @methodOf visor.visor
-             *
-             * @description
-             *
-             *
-             * Notify `visor` that a user is no longer authenticated.
-             *
-             * Typical use is to call this function after a user logs out of the system.
-             */
-            setUnauthenticated: function(){
-              onAuthenticationFailed()
-            },
-            config: config
+          authenticate: function (retry) {
+            if (_authenticationPromise && !retry) {
+              return _authenticationPromise;
+            }
+            var deferred = $q.defer();
+            _authenticationPromise = deferred.promise;
+            $injector.invoke(config.authenticate)
+              .then(onAuthenticationSuccess, onAuthenticationFailed)
+              ['finally'](function () {
+              deferred.resolve(Visor.authData)
+            });
+            return deferred.promise;
+          },
+          /**
+           * @ngdoc function
+           * @name visor.visor#setAuthenticated
+           * @methodOf visor.visor
+           *
+           * @description
+           *
+           *
+           * Notify `visor` that an authentication was successful.
+           *
+           * Typical use is to call this function after a use logs in to the system.
+           *
+           * <div class="alert alert-info">
+           * **Note**: `authData` should be the identical to the result of the promise returned from {@link visor.visorProvider#authenticate `visorProvider.authenticate`}.
+           * </div>
+           *
+           *
+           * @param {Any} authData The authentication data to be used in future restrict functions.
+           */
+          setAuthenticated: function (authData) {
+            onAuthenticationSuccess(authData);
+            _authenticationPromise = $q.when(authData);
+            $injector.invoke(config.doAfterManualAuthentication, null, {authData: authData});
+          },
+          /**
+           * @ngdoc function
+           * @name visor.visor#isAuthenticated
+           * @methodOf visor.visor
+           *
+           * @description
+           *
+           * Determine if user was successfuly authenticated.
+           *
+           *
+           * @returns {boolean} True if the user was authenticated. False otherwise.
+           */
+          isAuthenticated: function () {
+            return !!Visor.authData;
+          },
+          /**
+           *
+           * Notify visor that a use tried to access a url that is restricted to it.
+           *
+           * **Note**: This function was intended for internal use.
+           *
+           *
+           * @param {string} restrictedUrl The url that the user was restricted access to.
+           *
+           */
+          onNotAllowed: function (restrictedUrl) {
+            if (Visor.isAuthenticated()) {
+              $injector.invoke(config.doOnNotAuthorized, null, {restrictedUrl: restrictedUrl});
+            } else {
+              $injector.invoke(config.doOnNotAuthenticated, null, {restrictedUrl: restrictedUrl});
+            }
+          },
+          /**
+           * @ngdoc function
+           * @name visor.visor#setUnauthenticated
+           * @methodOf visor.visor
+           *
+           * @description
+           *
+           *
+           * Notify `visor` that a user is no longer authenticated.
+           *
+           * Typical use is to call this function after a user logs out of the system.
+           */
+          setUnauthenticated: function () {
+            onAuthenticationFailed()
+          },
+          config: config
         };
         return Visor;
       }]
-  }])
-  .run(["visor","delayLocationChange",function(visor,delayLocationChange){
-    if (visor.config.authenticateOnStartup) {
-      delayLocationChange(visor.authenticate())
-    }
-  }])
-  .config(["visorPermissionsProvider",function(visorPermissionsProvider){
-        visorPermissionsProvider.doBeforeFirstCheck.push(["visor",function(Visor){
-            return Visor.authenticate();
-        }]);
-        visorPermissionsProvider.onNotAllowed = ["visor","restrictedUrl",function(Visor,restrictedUrl){
-            Visor.onNotAllowed(restrictedUrl);
-        }]
-  }])
+    }])
+    .run(["visor", "delayLocationChange", function (visor, delayLocationChange) {
+      if (visor.config.authenticateOnStartup) {
+        delayLocationChange(visor.authenticate())
+      }
+    }])
+    .config(["visorPermissionsProvider", function (visorPermissionsProvider) {
+      visorPermissionsProvider.doBeforeFirstCheck.push(["visor", function (Visor) {
+        return Visor.authenticate();
+      }]);
+      visorPermissionsProvider.onNotAllowed = ["visor", "restrictedUrl", function (Visor, restrictedUrl) {
+        Visor.onNotAllowed(restrictedUrl);
+      }]
+    }])
 })();
