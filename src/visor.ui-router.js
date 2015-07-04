@@ -33,7 +33,7 @@
               }
             }
             return perms;
-          }
+          };
           var $urlRouter = $injector.get('$urlRouter');
           var toUrl = null;
           var bypass = false;

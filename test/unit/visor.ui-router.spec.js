@@ -18,7 +18,7 @@ describe('visor.ui-router', function () {
         return defer.promise;
       });
 
-    })
+    });
     beforeEach(module('test.states'));
 
     it('should wait to change state until delay called', inject(function ($location, $state, $rootScope) {
@@ -84,7 +84,7 @@ describe('visor.ui-router', function () {
     }));
   });
   it('should not change anything if ui-router is not depended on', function () {
-    module('visor.permissions', 'visor.ui-router')
+    module('visor.permissions', 'visor.ui-router');
     inject(function ($location, $rootScope, visorPermissions) {
       $location.url('/something');
       $rootScope.$apply();
@@ -95,7 +95,7 @@ describe('visor.ui-router', function () {
       }, function () {
       });
       $rootScope.$apply();
-      //nothing crushed!
+      //nothing crashed!
     })
   });
 });

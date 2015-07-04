@@ -8,7 +8,7 @@ describe('delayLocationChange', function () {
       secondDefer = $q.defer();
       delayLocationChange(firstDefer.promise);
       delayLocationChange(secondDefer.promise);
-    })
+    });
   beforeEach(module('delayLocationChange.test'));
 
   it('should stop location change until promises is resolved', inject(function ($location, $rootScope) {

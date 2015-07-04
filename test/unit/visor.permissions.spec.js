@@ -9,7 +9,7 @@ describe('visor.permissions', function () {
     angular.module('config.do-before', ['visor.permissions']).config(function (visorPermissionsProvider) {
       visorPermissionsProvider.doBeforeFirstCheck =
         visorPermissionsProvider.doBeforeFirstCheck.concat(doBeforeFunctions)
-    })
+    });
     beforeEach(function () {
       doBeforeFunctions = [];
     });
@@ -73,7 +73,7 @@ describe('visor.permissions', function () {
         $rootScope.$apply();
         expect(called).toEqual(true);
       });
-    })
+    });
     it('should not call doBeforeFirstCheck again', function () {
       var calledCount = 0;
       doBeforeFunctions.push(function ($q) {
