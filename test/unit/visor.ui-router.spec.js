@@ -61,6 +61,18 @@ describe("visor.ui-router",function(){
            $rootScope.$apply();
            expect(calls).toEqual(["parent","child"])
         }));
+        it('should check the correct route with getPermissionsForRoute',inject(function($rootScope,visorPermissions){
+            var permission = visorPermissions.checkPermissionsForRoute('deny');
+            expect(permission).toEqual(false);
+            permission = visorPermissions.checkPermissionsForRoute('child');
+            expect(permission).toEqual(true);
+            expect(calls).toEqual(["deny","parent","child"])
+        }));
+        it('should return undefined when route does not exist',inject(function($rootScope,visorPermissions){
+            var result = visorPermissions.checkPermissionsForRoute('zzz');
+            $rootScope.$apply();
+            expect(result).toEqual(undefined);
+        }));
     });
     it("should not change anything if ui-router is not depended on",function(){
 			module("visor.permissions","visor.ui-router")

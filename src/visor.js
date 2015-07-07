@@ -16,7 +16,7 @@
    *
    * See {@link visor.visor `visor`} for usage.
    */
-  angular.module("visor",["visor.permissions","visor.ui-router","visor.ngRoute","delayLocationChange"])
+  angular.module("visor",["visor.permissions","visor.ui-router","visor.ngRoute","delayLocationChange","visor.allowed"])
 
   /**
    * @ngdoc service
@@ -330,10 +330,12 @@
         function onAuthenticationSuccess(authData) {
             Visor.authData =authData;
             visorPermissions.invokeParameters = [Visor.authData];
+            visorPermissions.clearPermissionCache();
         }
         function onAuthenticationFailed(){
             Visor.authData = undefined;
             visorPermissions.invokeParameters = [];
+            visorPermissions.clearPermissionCache();
         }
         var Visor = {
           /**

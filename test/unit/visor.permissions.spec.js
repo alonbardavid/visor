@@ -227,6 +227,61 @@ describe("visor.permissions",function(){
             });
         });
     });
+    describe('checkPermissionsForRoute',function(){
 
+        var routes = {
+            first: {
+                restrict: function(){return true;}
+            },
+            deny: {
+                restrict: function(){return false;}
+            }
+        }
+        var calls = [];
+        beforeEach(function(){
+            angular.module("test.getPermissionsForRoute",["visor.permissions"])
+                .config(function(visorPermissionsProvider){
+                    visorPermissionsProvider.getRoute = function(routeId){
+                        calls.push(routeId);
+                        return routes[routeId];
+                    }
+                });
+            calls = [];
+            module("test.getPermissionsForRoute");
+        })
 
+        it('should return true when route is allowed',inject(function($rootScope,visorPermissions){
+            var result = visorPermissions.checkPermissionsForRoute('first');
+            $rootScope.$apply();
+            expect(calls).toEqual(['first']);
+            expect(result).toEqual(true);
+        }));
+        it('should return false when route is not allowed',inject(function($rootScope,visorPermissions){
+            var result = visorPermissions.checkPermissionsForRoute('deny');
+            $rootScope.$apply();
+            expect(calls).toEqual(['deny']);
+            expect(result).toEqual(false);
+        }));
+        it('should cache requests',inject(function($rootScope,visorPermissions){
+            visorPermissions.checkPermissionsForRoute('first');
+            $rootScope.$apply();
+            var result = visorPermissions.checkPermissionsForRoute('first');
+            $rootScope.$apply();
+            expect(calls).toEqual(['first']); //make sure it's not called twice
+            expect(result).toEqual(true);
+        }));
+        it('should clear cache when called',inject(function($rootScope,visorPermissions){
+            visorPermissions.checkPermissionsForRoute('first');
+            $rootScope.$apply();
+            visorPermissions.clearPermissionCache();
+            visorPermissions.checkPermissionsForRoute('first');
+            $rootScope.$apply();
+            expect(calls).toEqual(['first','first']); //make sure it's not called twice
+        }));
+        it('should return undefined when route does not exist',inject(function($rootScope,visorPermissions){
+            var result = visorPermissions.checkPermissionsForRoute('zzz');
+            $rootScope.$apply();
+            expect(result).toEqual(undefined);
+        }));
+    });
 });

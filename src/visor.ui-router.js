@@ -60,6 +60,9 @@
                             $injector.invoke(notAllowed,null,{restrictedUrl:toUrl})
                         },0);
                     }
+                    visorPermissions.getRoute = function(routeId){
+                        return $state.get(routeId);
+                    };
 				}]);
 
 			}

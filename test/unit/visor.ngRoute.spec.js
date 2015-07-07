@@ -35,6 +35,17 @@ describe("visor.ngRoute",function(){
          $rootScope.$apply();
          expect(errorCounter).toEqual(1);
        }));
+        it('should check the correct route with getPermissionsForRoute',inject(function($rootScope,visorPermissions){
+            var permission = visorPermissions.checkPermissionsForRoute('/deny');
+            expect(permission).toEqual(false);
+            permission = visorPermissions.checkPermissionsForRoute('/first');
+            expect(permission).toEqual(true);
+        }));
+        it('should return undefined when route does not exist',inject(function($rootScope,visorPermissions){
+            var result = visorPermissions.checkPermissionsForRoute('zzz');
+            $rootScope.$apply();
+            expect(result).toEqual(undefined);
+        }));
     });
 
     it("should not change anything if ng-route is not depended on",function(){

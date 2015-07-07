@@ -124,6 +124,98 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 			return service;
 		}]);
 })();
+(function () {
+    "use strict";
+
+    /**
+     * @ngdoc overview
+     * @name visor.allowed
+     * @description
+     *
+     * # Visor.Allowed
+     *
+     * `Visor.Allowed` contains directives that change elements based on weather a route is allowed or not.
+     *
+     */
+    angular.module("visor.allowed", ["visor.permissions"])
+    /**
+     * @ngdoc directive
+     * @name visor.allowed.showIfAllowed
+     *
+     * @description
+     *
+     * the `showIfAllowed` directive shows or hides the given HTML element based on whether the expression
+     * provided to `showIfAllowed` resolve to a route (url or state name) that can be accessed.
+     * `showIfAllowed` directive acts similar to `ngHide` directive - it adds an 'ng-hide' class to the element.
+     *
+     * @animations
+     * addClass: `.ng-hide` - happens when the `showIfAllowed` evaluates to a route that is restricted or when the
+     *  route becomes restricted
+     * removeClass: `.ng-hide` - happens when the `showIfAllowed` evaluates to a route that is not restricted or
+     *  when the route is no longer restricted
+     *
+     * @element ANY
+     * @param {expression} showIfAllowed If the {@link guide/expression expression} resolves to a route that
+     * is currently available then the element is shown.
+     */
+        .directive("showIfAllowed", ["visorPermissions", "$animate", function (visorPermissions, $animate) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attr) {
+                    var unListen = visorPermissions.notifyOnCacheClear(function(){
+                        syncElement(attr.showIfAllowed);
+                    })
+                    function syncElement(value) {
+                        // Copied from ngHideDirective (v1.3.13)
+                        var allowed = visorPermissions.checkPermissionsForRoute(value);
+                        $animate[allowed ? 'removeClass' : 'addClass'](element, "ng-hide", {
+                            tempClasses: "ng-hide-animate"
+                        });
+                    }
+                    attr.$observe('showIfAllowed', syncElement);
+                    scope.$on('$destroy',unListen);
+                }
+            };
+        }])
+    /**
+     * @ngdoc directive
+     * @name visor.allowed.classIfRestricted
+     *
+     * @description
+     *
+     * the `classIfRestricted` directive adds a class to the given HTML element based on whether the expression
+     * provided to `classIfRestricted` resolve to a route (url or state name) that is restricted.
+     *
+     * @animations
+     * addClass: `.visor-restricted` - happens when the `classIfRestricted` evaluates to a route that is restricted or when the
+     *  route becomes restricted
+     * removeClass: `.visor-restricted` - happens when the `classIfRestricted` evaluates to a route that is not restricted or
+     *  when the route is no longer restricted
+     *
+     * @element ANY
+     * @param {expression} showIfAllowed If the {@link guide/expression expression} resolves to a route that
+     * is currently available then the element is shown.
+     *
+     * @param {string} restrictedClass the class to add to the element. Defaults to 'visor-restricted'
+     */
+        .directive("classIfRestricted", ["visorPermissions", "$animate", function (visorPermissions, $animate) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attr) {
+                    //internal mechanism - cache clear is the only way in which a permission value can change
+                    var unListen = visorPermissions.notifyOnCacheClear(function(){
+                        syncElement(attr.classIfRestricted);
+                    })
+                    function syncElement(value) {
+                        var allowed = visorPermissions.checkPermissionsForRoute(value);
+                        $animate[!allowed ? 'addClass' : 'removeClass'](element, attr.restrictedClass || 'visor-restricted');
+                    };
+                    attr.$observe('classIfRestricted', syncElement);
+                    scope.$on('$destroy',unListen);
+                }
+            };
+        }])
+})();
 
 
 (function(){
@@ -142,7 +234,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
    *
    * See {@link visor.visor `visor`} for usage.
    */
-  angular.module("visor",["visor.permissions","visor.ui-router","visor.ngRoute","delayLocationChange"])
+  angular.module("visor",["visor.permissions","visor.ui-router","visor.ngRoute","delayLocationChange","visor.allowed"])
 
   /**
    * @ngdoc service
@@ -456,10 +548,12 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
         function onAuthenticationSuccess(authData) {
             Visor.authData =authData;
             visorPermissions.invokeParameters = [Visor.authData];
+            visorPermissions.clearPermissionCache();
         }
         function onAuthenticationFailed(){
             Visor.authData = undefined;
             visorPermissions.invokeParameters = [];
+            visorPermissions.clearPermissionCache();
         }
         var Visor = {
           /**
@@ -593,11 +687,21 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 	angular.module('visor.ngRoute',['visor.permissions'])
 		.run(['$rootScope', 'visorPermissions','$injector',function($rootScope, visorPermissions,$injector){
 			var ngRouteModuleExists = false;
+      var $route = null;
 			try {
-				$injector.get("$route");
+        $route = $injector.get("$route");
         ngRouteModuleExists = true;
 			}catch (e){}
 			if (ngRouteModuleExists) {
+        visorPermissions.getRoute = function(routeId){
+          for (var path in $route.routes){
+            var route = $route.routes[path];
+            if (route.regexp.exec(routeId)) {
+              return route;
+            }
+          }
+          return null;
+        };
 				$rootScope.$on('$routeChangeStart', function(e,next){
           next.resolve = next.resolve || {};
 					visorPermissions.onRouteChange(next,function delayChange(promise){
@@ -753,6 +857,23 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
          * </pre>
          */
         config.invokeParameters = [];
+            /**
+             * @ngdoc property
+             * @name visor.permissions.visorPermissionsProvider#getRoute
+             * @propertyOf visor.permissions.visorPermissionsProvider
+             *
+             * @description
+             *
+             * <div class="alert alert-info">
+             *  NOTE: should only be changed by routing module plugins
+             * </div>
+             *
+             * function that transforms a routeId to a route object that can be used in getPermissionsFromNext
+             *
+             */
+        config.getRoute = function(routeId){
+            throw new Error("method not implemented");
+        }
         var finishedBeforeCheck = false;
 
 
@@ -771,14 +892,21 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
          */
         this.$get = ["$q","$injector","$location",function($q,$injector,$location){
 
+            function checkPermissions(permissions) {
+              if (!permissions || permissions.length ===0) {
+                return true;
+              }
+              if (!angular.isArray(permissions)) {
+                permissions = [permissions];
+              }
+              var isAllowed = true;
+              permissions.forEach(function(permission){
+                isAllowed = isAllowed && permission.apply(null,VisorPermissions.invokeParameters);
+              });
+              return isAllowed;
+            }
             function handlePermission(next,permissions){
-                if (!angular.isArray(permissions)) {
-                  permissions = [permissions];
-                }
-                var isAllowed = true;
-                permissions.forEach(function(permission){
-                    isAllowed = isAllowed && permission.apply(null,VisorPermissions.invokeParameters);
-                });
+                var isAllowed = checkPermissions(permissions);
                 if (isAllowed) {
 									return true;
                 } else {
@@ -786,6 +914,9 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 									return false;
                 }
             }
+            var onCacheClearListeners = [];
+
+            var cachedRoutes = {};
             var VisorPermissions = {
 
                 /**
@@ -844,6 +975,85 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                  * runtime configuration for {@link visor.permissions.visorPermissionsProvider#getPermissionsFromNext getPermissionsFromNext}.
                  */
                 getPermissionsFromNext: config.getPermissionsFromNext,
+
+                /**
+                 * @ngdoc function
+                 * @name visor.permissions.visorPermissions#checkPermissionsForRoute
+                 * @methodOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * A function to check if a route is currently allowed or restricted
+                 *
+                 * Heavily uses caching
+                 *
+                 * @param {*} routeId an identifier for a route (depending on the routing module, could be a string,
+                 *      regex or some kind of object)
+                 *
+                 * @returns {Boolean|undefined} true if route is allowed
+                 */
+                checkPermissionsForRoute: function(routeId){
+                    var result = cachedRoutes[routeId];
+                    if (result !== undefined) {
+                        return result;
+                    }
+                    var route = VisorPermissions.getRoute(routeId);
+                    if (!route) {
+                        return undefined;
+                    }
+                    var permissions = VisorPermissions.getPermissionsFromNext(route);
+                    result = checkPermissions(permissions);
+                    cachedRoutes[routeId] = result;
+                    return result;
+                },
+                /**
+                 * @ngdoc function
+                 * @name visor.permissions.visorPermissions#clearPermissionCache
+                 * @methodOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * Clears the cache used by checkPermissionsForRoute - should be called when
+                 * the permission context changes (I.E. after authentication)
+                 */
+                clearPermissionCache: function(){
+                  cachedRoutes = {}
+                  onCacheClearListeners.forEach(function(handler){
+                      handler && handler();
+                  });
+                },
+                /**
+                 * @ngdoc function
+                 * @name visor.permissions.visorPermissions#notifyOnCacheClear
+                 * @methodOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * Notify handler when the permission cache used by checkPermissionsForRoute is cleared
+                 *
+                 * @param {function} handler the handler function to call
+                 *
+                 * @returns {function} a dereigster function
+                 */
+                notifyOnCacheClear: function (handler){
+                    onCacheClearListeners.push(handler);
+                    return function(){
+                        var i = onCacheClearListeners.indexOf(handler);
+                        if(i != -1) {
+                            onCacheClearListeners.splice(i, 1);
+                        }
+                    }
+                },
+                /**
+                 * @ngdoc property
+                 * @name visor.permissions.visorPermissions#getRoute
+                 * @propertyOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * runtime configuration for {@link visor.permissions.visorPermissionsProvider#getRoute getRoute}.
+                 */
+                getRoute: config.getRoute,
                 /**
                  * @ngdoc property
                  * @name visor.permissions.visorPermissions#invokeParameters
@@ -854,7 +1064,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                  * runtime configuration for {@link visor.permissions.invokeParameters#getPermissionsFromNext getPermissionsFromNext}.
                  */
                 invokeParameters:config.invokeParameters,
-								invokeNotAllowed: function(notAllowedFn){$injector.invoke(notAllowedFn,null,{restrictedUrl:$location.url()})}
+                invokeNotAllowed: function(notAllowedFn){$injector.invoke(notAllowedFn,null,{restrictedUrl:$location.url()})}
             };
             return VisorPermissions;
         }]
@@ -922,6 +1132,9 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                             $injector.invoke(notAllowed,null,{restrictedUrl:toUrl})
                         },0);
                     }
+                    visorPermissions.getRoute = function(routeId){
+                        return $state.get(routeId);
+                    };
 				}]);
 
 			}

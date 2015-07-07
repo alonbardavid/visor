@@ -144,6 +144,23 @@
          * </pre>
          */
         config.invokeParameters = [];
+            /**
+             * @ngdoc property
+             * @name visor.permissions.visorPermissionsProvider#getRoute
+             * @propertyOf visor.permissions.visorPermissionsProvider
+             *
+             * @description
+             *
+             * <div class="alert alert-info">
+             *  NOTE: should only be changed by routing module plugins
+             * </div>
+             *
+             * function that transforms a routeId to a route object that can be used in getPermissionsFromNext
+             *
+             */
+        config.getRoute = function(routeId){
+            throw new Error("method not implemented");
+        }
         var finishedBeforeCheck = false;
 
 
@@ -162,14 +179,21 @@
          */
         this.$get = ["$q","$injector","$location",function($q,$injector,$location){
 
+            function checkPermissions(permissions) {
+              if (!permissions || permissions.length ===0) {
+                return true;
+              }
+              if (!angular.isArray(permissions)) {
+                permissions = [permissions];
+              }
+              var isAllowed = true;
+              permissions.forEach(function(permission){
+                isAllowed = isAllowed && permission.apply(null,VisorPermissions.invokeParameters);
+              });
+              return isAllowed;
+            }
             function handlePermission(next,permissions){
-                if (!angular.isArray(permissions)) {
-                  permissions = [permissions];
-                }
-                var isAllowed = true;
-                permissions.forEach(function(permission){
-                    isAllowed = isAllowed && permission.apply(null,VisorPermissions.invokeParameters);
-                });
+                var isAllowed = checkPermissions(permissions);
                 if (isAllowed) {
 									return true;
                 } else {
@@ -177,6 +201,9 @@
 									return false;
                 }
             }
+            var onCacheClearListeners = [];
+
+            var cachedRoutes = {};
             var VisorPermissions = {
 
                 /**
@@ -235,6 +262,85 @@
                  * runtime configuration for {@link visor.permissions.visorPermissionsProvider#getPermissionsFromNext getPermissionsFromNext}.
                  */
                 getPermissionsFromNext: config.getPermissionsFromNext,
+
+                /**
+                 * @ngdoc function
+                 * @name visor.permissions.visorPermissions#checkPermissionsForRoute
+                 * @methodOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * A function to check if a route is currently allowed or restricted
+                 *
+                 * Heavily uses caching
+                 *
+                 * @param {*} routeId an identifier for a route (depending on the routing module, could be a string,
+                 *      regex or some kind of object)
+                 *
+                 * @returns {Boolean|undefined} true if route is allowed
+                 */
+                checkPermissionsForRoute: function(routeId){
+                    var result = cachedRoutes[routeId];
+                    if (result !== undefined) {
+                        return result;
+                    }
+                    var route = VisorPermissions.getRoute(routeId);
+                    if (!route) {
+                        return undefined;
+                    }
+                    var permissions = VisorPermissions.getPermissionsFromNext(route);
+                    result = checkPermissions(permissions);
+                    cachedRoutes[routeId] = result;
+                    return result;
+                },
+                /**
+                 * @ngdoc function
+                 * @name visor.permissions.visorPermissions#clearPermissionCache
+                 * @methodOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * Clears the cache used by checkPermissionsForRoute - should be called when
+                 * the permission context changes (I.E. after authentication)
+                 */
+                clearPermissionCache: function(){
+                  cachedRoutes = {}
+                  onCacheClearListeners.forEach(function(handler){
+                      handler && handler();
+                  });
+                },
+                /**
+                 * @ngdoc function
+                 * @name visor.permissions.visorPermissions#notifyOnCacheClear
+                 * @methodOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * Notify handler when the permission cache used by checkPermissionsForRoute is cleared
+                 *
+                 * @param {function} handler the handler function to call
+                 *
+                 * @returns {function} a dereigster function
+                 */
+                notifyOnCacheClear: function (handler){
+                    onCacheClearListeners.push(handler);
+                    return function(){
+                        var i = onCacheClearListeners.indexOf(handler);
+                        if(i != -1) {
+                            onCacheClearListeners.splice(i, 1);
+                        }
+                    }
+                },
+                /**
+                 * @ngdoc property
+                 * @name visor.permissions.visorPermissions#getRoute
+                 * @propertyOf visor.permissions.visorPermissions
+                 *
+                 * @description
+                 *
+                 * runtime configuration for {@link visor.permissions.visorPermissionsProvider#getRoute getRoute}.
+                 */
+                getRoute: config.getRoute,
                 /**
                  * @ngdoc property
                  * @name visor.permissions.visorPermissions#invokeParameters
@@ -245,7 +351,7 @@
                  * runtime configuration for {@link visor.permissions.invokeParameters#getPermissionsFromNext getPermissionsFromNext}.
                  */
                 invokeParameters:config.invokeParameters,
-								invokeNotAllowed: function(notAllowedFn){$injector.invoke(notAllowedFn,null,{restrictedUrl:$location.url()})}
+                invokeNotAllowed: function(notAllowedFn){$injector.invoke(notAllowedFn,null,{restrictedUrl:$location.url()})}
             };
             return VisorPermissions;
         }]
