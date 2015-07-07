@@ -1,29 +1,29 @@
 module.exports = function (config) {
-  config.set({
+    config.set({
 
-    files: [
-      'bower_components/angular/angular.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'bower_components/angular-route/angular-route.js',
-      'src/**/*.js',
-      'test/unit/**/*.js'
-    ],
+        files: [
+            'bower_components/angular/angular.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            'bower_components/angular-ui-router/release/angular-ui-router.js',
+            'bower_components/angular-route/angular-route.js',
+            'src/**/*.js',
+            'test/unit/**/*.js'
+        ],
 
-    autoWatch: true,
-    singleRun: false,
-    basePath: '../',
+        autoWatch: true,
+        singleRun: false,
+        basePath: '../',
 
-    reporters: ['spec'],
-    frameworks: ['jasmine'],
+        reporters: ['spec'],
+        frameworks: ['jasmine'],
 
-    browsers: ['PhantomJS'],
+        browsers: ['PhantomJS'],
 
-    plugins: [
-      'karma-phantomjs-launcher',
-      'karma-jasmine',
-      'karma-spec-reporter'
-    ]
+        plugins: [
+            'karma-phantomjs-launcher',
+            'karma-jasmine',
+            'karma-spec-reporter'
+        ]
 
-  });
+    });
 };
