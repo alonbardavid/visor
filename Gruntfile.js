@@ -158,8 +158,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify']);
     grunt.registerTask('dist', 'Perform a clean build', ['clean', 'build', 'copy:release']);
     grunt.registerTask('site', 'Build and create site', ['dist', 'copy:site', 'ngdocs:all']);
-    grunt.registerTask('gh-pages', 'Build, create site and push to gh-pages', ['gh-pages', 'clean:gh-pages']);
+    grunt.registerTask('build-gh-pages', 'Build, create site and push to gh-pages', ['gh-pages', 'clean:gh-pages']);
     grunt.registerTask('push-to-git', 'Add, commit, create tag and push to git', ['gitadd:release', 'gitcommit:master', 'gittag:release', 'gitpush:origin']);
     grunt.registerTask('publish', 'Builds and publishes to all relevent repositories',
-        ['bumpup:patch', 'site', 'changelog', 'push-to-git', 'npm-publish'])
+        ['bumpup:patch', 'site', 'changelog', 'push-to-git', 'npm-publish','build-gh-pages'])
 }

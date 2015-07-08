@@ -1,10 +1,12 @@
-<a name"0.1.1"></a>
-### 0.1.1 (2015-07-08)
-
-
 <a name"0.1.0"></a>
 ## 0.1.0 (2015-07-08)
 
+#### Bug Fixes
+
+* **ui-router:** state inheritance with dot notation does work with two levels of inheritance ([b7b05d5fce7dafd9f1047dc1e01ec2f4fd483ed5](https://github.com/illniyar/visor/commit/b7b05d5fce7dafd9f1047dc1e01ec2f4fd483ed5))
+
+#### Features
+* **visor.allowed:** add directives to add/remove classes from an element based on route restriction ([84f443bda058a6a950470899cd1331342ae05c69](https://github.com/illniyar/visor/commit/84f443bda058a6a950470899cd1331342ae05c69))
 
 <a name"0.0.6"></a>
 ### 0.0.6 (2015-06-17)
