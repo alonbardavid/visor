@@ -1,0 +1,20 @@
+<h1><code ng:non-bindable="">showIfAllowed</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor.allowed</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-allowed-showifallowed-page"><p>the <code>showIfAllowed</code> directive shows or hides the given HTML element based on whether the expression
+provided to <code>showIfAllowed</code> resolve to a route (url or state name) that can be accessed.
+<code>showIfAllowed</code> directive acts similar to <code>ngHide</code> directive - it adds an &#39;ng-hide&#39; class to the element.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY show-if-allowed="{expression}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+<h3 id="usage_animations">Animations</h3>
+<div class="animations"><ul><li>addClass: `.ng-hide` - happens when the `showIfAllowed` evaluates to a route that is restricted or when the</li><li>route becomes restricted</li><li>removeClass: `.ng-hide` - happens when the `showIfAllowed` evaluates to a route that is not restricted or</li><li>when the route is no longer restricted</li></ul></div>
+<h4 id="usage_animations_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>showIfAllowed</td><td><a href="" class="label type-hint type-hint-expression">expression</a></td><td><div class="visor-allowed-showifallowed-page"><p>If the <a href="#/guide/expression">expression</a> resolves to a route that
+is currently available then the element is shown.</p>
+</div></td></tr></tbody></table></div>
+</div>

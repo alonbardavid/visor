@@ -10,7 +10,26 @@
 <a href="#/api/visor.permissions.visorPermissions#onroutechange">onRouteChange</a> when a route has changed.</p>
 </div></div>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><h3 id="methods_onroutechange">onRouteChange(next, delayChange)</h3>
+<ul class="methods"><li><h3 id="methods_checkpermissionsforroute">checkPermissionsForRoute(routeId)</h3>
+<div class="checkpermissionsforroute"><div class="visor-permissions-visorpermissions-checkpermissionsforroute-page"><p>A function to check if a route is currently allowed or restricted</p>
+<p>Heavily uses caching</p>
+</div><h5 id="methods_checkpermissionsforroute_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>routeId</td><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="visor-permissions-visorpermissions-checkpermissionsforroute-page"><p>an identifier for a route (depending on the routing module, could be a string,
+regex or some kind of object)</p>
+</div></td></tr></tbody></table><h5 id="methods_checkpermissionsforroute_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean|undefined</a></td><td><div class="visor-permissions-visorpermissions-checkpermissionsforroute-page"><p>true if route is allowed</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_clearpermissioncache">clearPermissionCache()</h3>
+<div class="clearpermissioncache"><div class="visor-permissions-visorpermissions-clearpermissioncache-page"><p>Clears the cache used by checkPermissionsForRoute - should be called when
+the permission context changes (I.E. after authentication)</p>
+</div></div>
+</li>
+<li><h3 id="methods_notifyoncacheclear">notifyOnCacheClear(handler)</h3>
+<div class="notifyoncacheclear"><div class="visor-permissions-visorpermissions-notifyoncacheclear-page"><p>Notify handler when the permission cache used by checkPermissionsForRoute is cleared</p>
+</div><h5 id="methods_notifyoncacheclear_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>handler</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="visor-permissions-visorpermissions-notifyoncacheclear-page"><p>the handler function to call</p>
+</div></td></tr></tbody></table><h5 id="methods_notifyoncacheclear_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="visor-permissions-visorpermissions-notifyoncacheclear-page"><p>a dereigster function</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_onroutechange">onRouteChange(next, delayChange)</h3>
 <div class="onroutechange"><div class="visor-permissions-visorpermissions-onroutechange-page"><div class="alert alert-info">
 NOTE: should only be called by routing module plugins
 </div>
@@ -29,6 +48,10 @@ the check is delayed.</p>
 <div class="member property"><h2 id="properties">Properties</h2>
 <ul class="properties"><li><h3 id="properties_getpermissionsfromnext">getPermissionsFromNext</h3>
 <div class="getpermissionsfromnext"><div class="visor-permissions-visorpermissions-getpermissionsfromnext-page"><p>runtime configuration for <a href="#/api/visor.permissions.visorPermissionsProvider#getpermissionsfromnext">getPermissionsFromNext</a>.</p>
+</div></div>
+</li>
+<li><h3 id="properties_getroute">getRoute</h3>
+<div class="getroute"><div class="visor-permissions-visorpermissions-getroute-page"><p>runtime configuration for <a href="#/api/visor.permissions.visorPermissionsProvider#getroute">getRoute</a>.</p>
 </div></div>
 </li>
 <li><h3 id="properties_invokeparameters">invokeParameters</h3>

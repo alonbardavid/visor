@@ -1,0 +1,22 @@
+<h1><code ng:non-bindable="">classIfRestricted</code>
+<div><span class="hint">service in module <code ng:non-bindable="">visor.allowed</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="visor-allowed-classifrestricted-page"><p>the <code>classIfRestricted</code> directive adds a class to the given HTML element based on whether the expression
+provided to <code>classIfRestricted</code> resolve to a route (url or state name) that is restricted.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY class-if-restricted
+     show-if-allowed="{expression}"
+     restricted-class="{string}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+<h3 id="usage_animations">Animations</h3>
+<div class="animations"><ul><li>addClass: `.visor-restricted` - happens when the `classIfRestricted` evaluates to a route that is restricted or when the</li><li>route becomes restricted</li><li>removeClass: `.visor-restricted` - happens when the `classIfRestricted` evaluates to a route that is not restricted or</li><li>when the route is no longer restricted</li></ul></div>
+<h4 id="usage_animations_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>showIfAllowed</td><td><a href="" class="label type-hint type-hint-expression">expression</a></td><td><div class="visor-allowed-classifrestricted-page"><p>If the <a href="#/guide/expression">expression</a> resolves to a route that
+is currently available then the element is shown.</p>
+</div></td></tr><tr><td>restrictedClass</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="visor-allowed-classifrestricted-page"><p>the class to add to the element. Defaults to &#39;visor-restricted&#39;</p>
+</div></td></tr></tbody></table></div>
+</div>

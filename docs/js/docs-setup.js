@@ -32,6 +32,33 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "visor.allowed",
+      "shortName": "visor.allowed",
+      "type": "overview",
+      "moduleName": "visor.allowed",
+      "shortDescription": "Visor.Allowed",
+      "keywords": "allowed api based change directives elements overview route visor weather"
+    },
+    {
+      "section": "api",
+      "id": "visor.allowed.classIfRestricted",
+      "shortName": "visor.allowed.classIfRestricted",
+      "type": "directive",
+      "moduleName": "visor.allowed",
+      "shortDescription": "the classIfRestricted directive adds a class to the given HTML element based on whether the expression",
+      "keywords": "add addclass adds allowed api based class classifrestricted currently defaults directive element evaluates expression guide html longer provided removeclass resolve resolves restricted restrictedclass route showifallowed visor visor-restricted"
+    },
+    {
+      "section": "api",
+      "id": "visor.allowed.showIfAllowed",
+      "shortName": "visor.allowed.showIfAllowed",
+      "type": "directive",
+      "moduleName": "visor.allowed",
+      "shortDescription": "the showIfAllowed directive shows or hides the given HTML element based on whether the expression",
+      "keywords": "accessed acts addclass adds allowed api based class currently directive element evaluates expression guide hides html longer ng-hide nghide provided removeclass resolve resolves restricted route showifallowed visor"
+    },
+    {
+      "section": "api",
       "id": "visor.authenticatedOnly",
       "shortName": "visor.authenticatedOnly",
       "type": "service",
@@ -73,7 +100,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "visor.permissions",
       "shortDescription": "visorPermissions checks for permissions and notifies when a routes that isn&#39;t allowed is requested.",
-      "keywords": "alert alert-info allowed api call called case change changed changes check checks class configuration configure delaychange delayed depending false function functions getpermissionsfromnext invokeparameters isn module ngroute note notifies object onroutechange order permission permissions plugins promise property provided rejected requested requires resolved route routes routing runtime service string triggers true ui-router visor visorpermissions visorpermissionsprovider work"
+      "keywords": "alert alert-info allowed api authentication cache caching call called case change changed changes check checkpermissionsforroute checks class cleared clearpermissioncache clears configuration configure context currently delaychange delayed depending dereigster false function functions getpermissionsfromnext getroute handler heavily identifier invokeparameters isn kind module ngroute note notifies notify notifyoncacheclear object onroutechange order permission permissions plugins promise property provided regex rejected requested requires resolved restricted route routeid routes routing runtime service string triggers true ui-router visor visorpermissions visorpermissionsprovider work"
     },
     {
       "section": "api",
@@ -82,7 +109,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "visor.permissions",
       "shortDescription": "visorPermissionsProvider provides a pluggable configuration to adjust how visor.permissions",
-      "keywords": "$http access adjust alert alert-info allow allowed angular api array attribute boolean call calls change changed changes changing check class clients codes compatibility config configuration default determine determines dobeforefirstcheck examples failed function functions getpermissionsfromnext guarantee handle indicating injected invokeparameters isadmin list local methods module modules moudle multiple mymodule navigated ngroute note object occur onnotallowed onroutechange parameter paths performed permission permissions pluggable plugin plugins promise property push receives requires resolved restrict restrictedurl return returns route routing runtime send service set source support theuser time true ui-router url user userinfo validate values var visor visorpermissions visorpermissionsprovider"
+      "keywords": "$http access adjust alert alert-info allow allowed angular api array attribute boolean call calls change changed changes changing check class clients codes compatibility config configuration default determine determines dobeforefirstcheck examples failed function functions getpermissionsfromnext getroute guarantee handle indicating injected invokeparameters isadmin list local methods module modules moudle multiple mymodule navigated ngroute note object occur onnotallowed onroutechange parameter paths performed permission permissions pluggable plugin plugins promise property push receives requires resolved restrict restrictedurl return returns route routeid routing runtime send service set source support theuser time transforms true ui-router url user userinfo validate values var visor visorpermissions visorpermissionsprovider"
     },
     {
       "section": "api",
