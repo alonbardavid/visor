@@ -100,7 +100,7 @@ module.exports = function (grunt) {
         gitadd: {
             release: {
                 files: {
-                    src: ['package.json', 'bower.json', 'CHANGELOG.md']
+                    src: ['package.json', 'bower.json', 'CHANGELOG.md','release/visor.js','release/visor.min.js']
                 }
             }
         },
