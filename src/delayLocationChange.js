@@ -1,5 +1,5 @@
 (function () {
-    'use strict';
+    "use strict";
 
     /**
      * @ngdoc overview
@@ -11,9 +11,9 @@
      * `delayLocationChange` module contains the {@link delayLocationChange.delayLocationChange `delayLocationChange`} service.
      *
      */
-    angular.module('delayLocationChange', [])
+    angular.module("delayLocationChange", [])
 
-        .service('delayLocationChange', ['$rootScope', '$q', '$timeout', '$location', '$injector',
+        .service("delayLocationChange", ["$rootScope", "$q", "$timeout", "$location", "$injector",
             function ($rootScope, $q, $timeout, $location, $injector) {
 
                 /**
@@ -32,10 +32,10 @@
                  * @example
                  *
                  * <pre>
-                 *   angular.module('myModule',['delayLocationChange'])
+                 *   angular.module("myModule",["delayLocationChange"])
                  *   .run(function(delayLocationChange){
       *     delayLocationChange(function($http){
-      *       return $http.get('/something/that/is/needed')
+      *       return $http.get("/something/that/is/needed")
       *       .then(function(result){
       *         //do something with result that you need before rendering the first time
       *       })
@@ -79,7 +79,7 @@
                         //we are running on the assumption (that might prove false at some point)
                         //that nothing happens between canceling $locationChangeStart and emitting
                         //$locationChangeSuccess
-                        $rootScope.$broadcast('$locationChangeSuccess', _toUrl, _fromUrl);
+                        $rootScope.$broadcast("$locationChangeSuccess", _toUrl, _fromUrl);
                     } else {
                         $location.url(nextUrl);
                     }
@@ -91,7 +91,7 @@
                     promise['finally'](checkPromises);
                 }
 
-                var unlisten = $rootScope.$on('$locationChangeStart', function (e, toUrl, fromUrl) {
+                var unlisten = $rootScope.$on("$locationChangeStart", function (e, toUrl, fromUrl) {
                     changeStarted = true;
                     nextUrl = $location.url();
                     unlisten();

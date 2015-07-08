@@ -2,6 +2,7 @@
 <html ng-app="visorSampleApp">
 <head>
     <link rel="stylesheet" type="text/css" href="../lib/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
     <script src="../lib/angular.js"></script>
     <script src="../lib/angular-cookies.js"></script>
     <script src="../lib/angular-ui-router.js"></script>
@@ -14,9 +15,12 @@
     <div class="navbar-inner">
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
-                <li ng-class="{active: $state.includes('home')}"><a href="#/home">Home</a></li>
-                <li ng-class="{active: $state.includes('private')}"><a href="#/private">Private</a></li>
-                <li ng-class="{active: $state.includes('admin')}"><a href="#/admin">Admin</a></li>
+                <li ng-class="{active: $state.includes('home')}" class-if-restricted="home"><a href="#/home">Home</a>
+                </li>
+                <li ng-class="{active: $state.includes('private')}" class-if-restricted="private"><a href="#/private">Private</a>
+                </li>
+                <li ng-class="{active: $state.includes('admin')}" class-if-restricted="admin"><a
+                        href="#/admin">Admin</a></li>
             </ul>
             <div class="nav navbar-nav navbar-right" ng-if="!user"><a href="#/login">Login</a></div>
             <div class="nav navbar-nav navbar-right" ng-if="user">You are logged in. <a ng-click="logout()">Logout</a>

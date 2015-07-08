@@ -2,13 +2,13 @@
 
 describe('visor', function () {
 
-    describe('authentication', function () {
+    describe("authentication", function () {
         var defer, authCallCounter;
 
         beforeEach(function () {
             defer = null;
             authCallCounter = 0;
-            angular.module('test.visor.authentication', ['visor'])
+            angular.module("test.visor.authentication", ['visor'])
                 .config(function (visorProvider) {
                     visorProvider.authenticate = function ($q) {
                         defer = defer || $q.defer();
@@ -16,10 +16,10 @@ describe('visor', function () {
                         return defer.promise;
                     };
                 });
-            module('test.visor.authentication');
+            module("test.visor.authentication");
         });
 
-        it('should send authInfo to permission checks', inject(function ($rootScope, visorPermissions) {
+        it("should send authInfo to permission checks", inject(function ($rootScope, visorPermissions) {
             var argumentsInNext = null;
             visorPermissions.onRouteChange({
                 restrict: function () {
@@ -27,17 +27,17 @@ describe('visor', function () {
                 }
             }, function () {
             });
-            defer.resolve('authValue');
+            defer.resolve("authValue");
             $rootScope.$apply();
-            expect(Array.prototype.slice.call(argumentsInNext, 0)).toEqual(['authValue']);
+            expect(Array.prototype.slice.call(argumentsInNext, 0)).toEqual(["authValue"]);
         }));
 
-        it('should call authenticate on startup by default', inject(function ($rootScope, visor) {
+        it("should call authenticate on startup by default", inject(function ($rootScope, visor) {
             $rootScope.$apply();
             expect(authCallCounter).toEqual(1);
         }));
 
-        it('should not call authenticate twice if route starts before authentication done', inject(function ($rootScope, visorPermissions, visor) {
+        it("should not call authenticate twice if route starts before authentication done", inject(function ($rootScope, visorPermissions, visor) {
             $rootScope.$apply();
             expect(authCallCounter).toEqual(1);
             visorPermissions.onRouteChange({
@@ -50,23 +50,23 @@ describe('visor', function () {
             expect(authCallCounter).toEqual(1);
         }));
 
-        it('should not change route until autentication on startup finishes', inject(function ($rootScope, $location, visor) {
-            $location.url('/thingy');
+        it("should not change route until autentication on startup finishes", inject(function ($rootScope, $location, visor) {
+            $location.url("/thingy");
             $rootScope.$apply();
-            expect($location.url()).toEqual('');
+            expect($location.url()).toEqual("");
             defer.resolve(null);
             $rootScope.$apply();
-            expect($location.url()).toEqual('/thingy');
+            expect($location.url()).toEqual("/thingy");
         }));
 
-        it('should not call authenticate on startup if flag disabled, and call it only on first permission check', function () {
-            angular.module('test.visor.authentication.nostartup', ['test.visor.authentication']).config(function (visorProvider) {
+        it("should not call authenticate on startup if flag disabled, and call it only on first permission check", function () {
+            angular.module("test.visor.authentication.nostartup", ["test.visor.authentication"]).config(function (visorProvider) {
                 visorProvider.authenticateOnStartup = false;
-                module('test.visor.authentication.nostartup');
+                module("test.visor.authentication.nostartup");
                 inject(function ($rootScope, $location, visorPermissions) {
-                    $location.url('/thingy');
+                    $location.url("/thingy");
                     $rootScope.$apply();
-                    expect($location.url()).toEqual('/thingy');
+                    expect($location.url()).toEqual("/thingy");
                     expect(authCallCounter).toEqual(0);
                     visorPermissions.onRouteChange({}, function () {
                     });
@@ -82,13 +82,13 @@ describe('visor', function () {
                 });
             })
         });
-        it('should allow using dependent services in auth', function () {
+        it("should allow using dependent services in auth", function () {
             var authCalled = false;
-            angular.module('test.visor.authentication.with.service', ['visor'])
-                .service('authService', function ($q) {
+            angular.module("test.visor.authentication.with.service", ['visor'])
+                .service("authService", function ($q) {
                     return function () {
                         authCalled = true;
-                        return $q.when('auth!');
+                        return $q.when("auth!");
                     }
                 })
                 .config(function (visorProvider) {
@@ -96,33 +96,33 @@ describe('visor', function () {
                         return authService()
                     };
                 });
-            module('test.visor.authentication.with.service');
+            module("test.visor.authentication.with.service");
             inject(function (visor, $location, $rootScope) {
-                $location.url('/thingy');
+                $location.url("/thingy");
                 $rootScope.$apply();
                 expect(authCalled).toEqual(true);
             });
         })
     });
 
-    describe('ngRoute', function () {
+    describe("ngRoute", function () {
 
         var authenticate = null;
 
         beforeEach(function () {
             authenticate = null;
-            angular.module('test.config.ngRoute', ['ngRoute', 'visor'])
+            angular.module("test.config.ngRoute", ['ngRoute', 'visor'])
                 .config(function ($routeProvider, visorProvider, authenticatedOnly, notForAuthenticated) {
 
-                    $routeProvider.when('/private_url', {
+                    $routeProvider.when("/private_url", {
                         restrict: authenticatedOnly
                     })
-                        .when('/public', {})
-                        .when('/hidden', {
+                        .when("/public", {})
+                        .when("/hidden", {
                             restrict: notForAuthenticated
                         })
-                        .when('/login', {})
-                        .when('/access_denied', {});
+                        .when("/login", {})
+                        .when("/access_denied", {});
                     visorProvider.authenticate = function ($q) {
                         return authenticate($q);
                     };
@@ -131,57 +131,57 @@ describe('visor', function () {
 
         it('should allow already loggedin user into authenticatedOnly route', function () {
             authenticate = function ($q) {
-                return $q.when({username: 'myName'});
+                return $q.when({username: "myName"});
             };
-            module('test.config.ngRoute');
+            module("test.config.ngRoute");
             inject(function ($rootScope, $location, $route, visor, $timeout) {
-                $location.url('/private_url');
+                $location.url("/private_url");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($location.url()).toEqual('/private_url')
+                expect($location.url()).toEqual("/private_url")
             });
         });
 
         it('should redirect anonymous users to login if accessing private route', function () {
             authenticate = function ($q) {
-                return $q.reject('not authenticated');
+                return $q.reject("not authenticated");
             };
-            module('test.config.ngRoute');
+            module("test.config.ngRoute");
             inject(function ($rootScope, $q, $location, $route, visor, $timeout) {
-                $location.url('/private_url');
+                $location.url("/private_url");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($route.current.originalPath).toEqual('/login');
-                expect($location.search().next).toEqual('/private_url');
+                expect($route.current.originalPath).toEqual("/login");
+                expect($location.search().next).toEqual("/private_url");
             });
         });
 
         it('should not redirect anonymous users to login if accessing public route', function () {
             authenticate = function ($q) {
-                return $q.reject('not authenticated');
+                return $q.reject("not authenticated");
             };
-            module('test.config.ngRoute');
+            module("test.config.ngRoute");
             inject(function ($rootScope, $location, $route, $q, visor, $timeout) {
-                $location.url('/public');
+                $location.url("/public");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($location.url()).toEqual('/public');
+                expect($location.url()).toEqual("/public");
             });
         });
         it('should allow access to private states after authentication', function () {
             authenticate = function ($q) {
-                return $q.reject('not authenticated');
+                return $q.reject("not authenticated");
             };
-            module('test.config.ngRoute');
+            module("test.config.ngRoute");
             inject(function ($rootScope, $route, $q, visor, $location, $timeout) {
-                $location.url('/private_url');
+                $location.url("/private_url");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($route.current.originalPath).toEqual('/login');
-                visor.setAuthenticated({username: 'some_name'});
+                expect($route.current.originalPath).toEqual("/login");
+                visor.setAuthenticated({username: "some_name"});
                 $rootScope.$apply();
                 //should redirect back to original route automatically
-                expect($location.url()).toEqual('/private_url');
+                expect($location.url()).toEqual("/private_url");
             });
         });
 
@@ -189,13 +189,13 @@ describe('visor', function () {
             authenticate = function ($q) {
                 return $q.when(true);
             };
-            module('test.config.ngRoute');
+            module("test.config.ngRoute");
             inject(function ($rootScope, $route, $q, visor, $location, $timeout) {
-                $location.url('/hidden');
+                $location.url("/hidden");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($route.current.originalPath).toEqual('/access_denied');
-                expect($location.url()).toEqual('/access_denied');
+                expect($route.current.originalPath).toEqual("/access_denied");
+                expect($location.url()).toEqual("/access_denied");
             });
         });
     });
@@ -206,32 +206,32 @@ describe('visor', function () {
 
         beforeEach(function () {
             authenticate = null;
-            angular.module('test.config', ['ui.router', 'visor'])
+            angular.module("test.config", ['ui.router', 'visor'])
                 .config(function ($stateProvider, visorProvider, authenticatedOnly, notForAuthenticated) {
 
-                    $stateProvider.state('private', {
-                        url: '/private_url',
+                    $stateProvider.state("private", {
+                        url: "/private_url",
                         restrict: authenticatedOnly
                     })
-                        .state('public', {
-                            url: '/public'
+                        .state("public", {
+                            url: "/public"
                         })
-                        .state('hidden', {
-                            url: '/hidden',
+                        .state("hidden", {
+                            url: "/hidden",
                             restrict: notForAuthenticated
                         })
-                        .state('private.nestedpublic', {
-                            url: '/public'
+                        .state("private.nestedpublic", {
+                            url: "/public"
                         })
-                        .state('public.nestedprivate', {
-                            url: '/public/private',
+                        .state("public.nestedprivate", {
+                            url: "/public/private",
                             restrict: authenticatedOnly
                         })
-                        .state('login', {
-                            url: '/login'
+                        .state("login", {
+                            url: "/login"
                         })
-                        .state('access_denied', {
-                            url: '/access_denied'
+                        .state("access_denied", {
+                            url: "/access_denied"
                         });
                     visorProvider.authenticate = function ($q) {
                         return authenticate($q);
@@ -241,73 +241,73 @@ describe('visor', function () {
 
         it('should allow already loggedin user into authenticatedOnly route', function () {
             authenticate = function ($q) {
-                return $q.when({username: 'myName'});
+                return $q.when({username: "myName"});
             };
-            module('test.config');
+            module("test.config");
             inject(function ($rootScope, $location, $state, $q, visor, $timeout) {
-                $location.url('/private_url');
+                $location.url("/private_url");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($location.url()).toEqual('/private_url')
+                expect($location.url()).toEqual("/private_url")
             });
         });
 
         it('should redirect anonymous users to login if accessing private route', function () {
             authenticate = function ($q) {
-                return $q.reject('not authenticated');
+                return $q.reject("not authenticated");
             };
-            module('test.config');
+            module("test.config");
             inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
-                $location.url('/private_url');
+                $location.url("/private_url");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($state.current.name).toEqual('login');
-                expect($location.search().next).toEqual('/private_url');
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toEqual("/private_url");
             });
         });
         it('should redirect anonymous users to login if accessing private route after visitng public url', function () {
             authenticate = function ($q) {
-                return $q.reject('not authenticated');
+                return $q.reject("not authenticated");
             };
-            module('test.config');
+            module("test.config");
             inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
-                $location.url('/public');
+                $location.url("/public");
                 $rootScope.$apply();
                 $timeout.flush();
                 $state.go('private');
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($state.current.name).toEqual('login');
-                expect($location.search().next).toEqual('/private_url');
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toEqual("/private_url");
             });
         });
         it('should not redirect anonymous users to login if accessing public route', function () {
             authenticate = function ($q) {
-                return $q.reject('not authenticated');
+                return $q.reject("not authenticated");
             };
-            module('test.config');
+            module("test.config");
             inject(function ($rootScope, $location, $state, $q, visor, $timeout) {
-                $location.url('/public');
+                $location.url("/public");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($location.url()).toEqual('/public');
+                expect($location.url()).toEqual("/public");
             });
         });
         it('should allow access to private states after authentication', function () {
             authenticate = function ($q) {
-                return $q.reject('not authenticated');
+                return $q.reject("not authenticated");
             };
-            module('test.config');
+            module("test.config");
             inject(function ($rootScope, $state, $q, visor, $location, $timeout) {
-                $location.url('/private_url');
+                $location.url("/private_url");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($state.current.name).toEqual('login');
-                visor.setAuthenticated({username: 'some_name'});
+                expect($state.current.name).toEqual("login");
+                visor.setAuthenticated({username: "some_name"});
                 $rootScope.$apply();
                 $timeout.flush();
                 //should redirect back to original route automatically
-                expect($location.url()).toEqual('/private_url');
+                expect($location.url()).toEqual("/private_url");
             });
         });
 
@@ -315,13 +315,13 @@ describe('visor', function () {
             authenticate = function ($q) {
                 return $q.when(true);
             };
-            module('test.config');
+            module("test.config");
             inject(function ($rootScope, $state, $q, visor, $location, $timeout) {
-                $location.url('/hidden');
+                $location.url("/hidden");
                 $rootScope.$apply();
                 $timeout.flush();
-                expect($state.current.name).toEqual('access_denied');
-                expect($location.url()).toEqual('/access_denied');
+                expect($state.current.name).toEqual("access_denied");
+                expect($location.url()).toEqual("/access_denied");
             });
         });
     });

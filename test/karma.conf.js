@@ -10,9 +10,9 @@ module.exports = function (config) {
             'test/unit/**/*.js'
         ],
 
-        autoWatch: true,
-        singleRun: false,
-        basePath: '../',
+        autoWatch: false,
+        singleRun: true,
+        basePath: "../",
 
         reporters: ['spec'],
         frameworks: ['jasmine'],
