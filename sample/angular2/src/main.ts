@@ -1,11 +1,11 @@
-import {CORE_DIRECTIVES, Component, View, bootstrap} from "angular2/angular2";
+import {CORE_DIRECTIVES, NgIf,Component, View, bootstrap} from "angular2/angular2";
 import {HTTP_BINDINGS} from "angular2/http";
 import {ROUTER_BINDINGS, HashLocationStrategy,
     LocationStrategy, Router, RouterLink, RouteConfig, RouterOutlet,
     RouteDefinition }
     from "angular2/router";
 import {bind, Injectable} from "angular2/di";
-import {LoggedInOnlyRoute} from "./visor";
+import {LoggedInOnlyRoute,Visor} from "./visor";
 
 
 import Home from "./home";
@@ -20,10 +20,11 @@ import Private from "./private";
     new LoggedInOnlyRoute({path: '/private', as: "private", component:Private})
 ])
 @Component({
-    selector: "app"
+    selector: "app",
+    bindings:[Visor]
 })
 @View({
-    directives: [CORE_DIRECTIVES, RouterOutlet, RouterLink],
+    directives: [CORE_DIRECTIVES, RouterOutlet, RouterLink,NgIf],
     template: `
     <div class="navbar navbar-default">
         <div class="navbar-inner">
@@ -39,10 +40,10 @@ import Private from "./private";
                         <a [router-link]="['/admin']">Admin</a>
                     </li>
                 </ul>
-                <div class="nav navbar-nav navbar-right" >
+                <div class="nav navbar-nav navbar-right" *ng-if="!visor.loggedIn">
                     <a [router-link]="['/login']">Login</a>
                 </div>
-                <div class="nav navbar-nav navbar-right" >
+                <div class="nav navbar-nav navbar-right" *ng-if="visor.loggedIn">
                     You are logged in. <a >Logout</a>
                 </div>
             </div>
@@ -51,7 +52,12 @@ import Private from "./private";
     <router-outlet class="container"></router-outlet>
     `
 })
-class App {}
+class App {
+    constructor(public visor:Visor){
+        this.visor = visor;
+        console.log(visor.loggedIn);
+    }
+}
 
 bootstrap(App, [
     HTTP_BINDINGS,

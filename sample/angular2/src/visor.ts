@@ -1,6 +1,19 @@
 import {RouteDefinition} from "angular2/router";
+import { Injectable} from "angular2/di";
 
+@Injectable()
+export class Visor {
+    loggedIn: Boolean = false;
+    isAdmin: Boolean = false;
 
+    public logIn(isAdmin){
+        this.loggedIn = true;
+        this.isAdmin = isAdmin;
+    }
+    public logOut(){
+        this.loggedIn = false;
+    }
+}
 export class LoggedInOnlyRoute implements RouteDefinition {
     data: any;
     path: string;
