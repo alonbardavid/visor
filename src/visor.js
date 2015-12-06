@@ -92,16 +92,7 @@
      * </pre>
      */
         .provider("visor", [function () {
-            function addNextToUrl(url, $location, restrictedUrl) {
-                if (config.shouldAddNext) {
-                    if (url.indexOf("?") >= 0) {
-                        return url.replace(/\?/, "?next=" + encodeURIComponent(restrictedUrl) + "&");
-                    }
-                    return url + "?next=" + encodeURIComponent(restrictedUrl);
-                } else {
-                    return url;
-                }
-            }
+
 
             var config = this;
             /**
@@ -171,7 +162,6 @@
              * Defaults to `true`
              */
             config.shouldAddNext = true;
-
             /**
              * @ngdoc function
              * @name visor.visorProvider#authenticate
@@ -230,7 +220,10 @@
              * </pre>
              */
             config.doOnNotAuthenticated = ["$location", "restrictedUrl", function ($location, restrictedUrl) {
-                $location.url(addNextToUrl(config.loginRoute, $location, restrictedUrl))
+                $location.url(config.loginRoute);
+                if (config.shouldAddNext) {
+                    $location.search('next',restrictedUrl);
+                }
             }];
             /**
              * @ngdoc function

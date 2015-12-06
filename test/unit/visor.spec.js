@@ -325,4 +325,106 @@ describe('visor', function () {
             });
         });
     });
+
+    describe('next url',function(){
+        it('should add nextUrl to loginRoute with existing parameters', function () {
+            angular.module("test.nextUrl.1", ['ui.router', 'visor'])
+                .config(function ($stateProvider, visorProvider, authenticatedOnly) {
+                    $stateProvider.state("private", {
+                        url: "/private_url",
+                        restrict: authenticatedOnly
+                    })
+                        .state("diffLogin", {
+                            url: "/diffLogin?name"
+                        })
+                    visorProvider.loginRoute = "/diffLogin?name=myName#myHash"
+                    visorProvider.authenticate = function ($q) {
+                        return $q.reject("not authenticated");
+                    };
+                });
+            module("test.nextUrl.1");
+            inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
+                $location.url("/private_url");
+                $rootScope.$apply();
+                $timeout.flush();
+                expect($state.current.name).toEqual("diffLogin");
+                expect($location.search().next).toEqual("/private_url");
+                expect($location.search().name).toEqual("myName");
+                expect($location.hash()).toEqual("myHash");
+            });
+        });
+        it('should מםא add nextUrl to loginRoute if shouldAddNext option is disabled', function () {
+            angular.module("test.nextUrl.2", ['ui.router', 'visor'])
+                .config(function ($stateProvider, visorProvider, authenticatedOnly) {
+                    $stateProvider.state("private", {
+                        url: "/private_url",
+                        restrict: authenticatedOnly
+                    })
+                        .state("login", {
+                            url: "/login"
+                        })
+                    visorProvider.shouldAddNext = false;
+                    visorProvider.authenticate = function ($q) {
+                        return $q.reject("not authenticated");
+                    };
+                });
+            module("test.nextUrl.2");
+            inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
+                $location.url("/private_url");
+                $rootScope.$apply();
+                $timeout.flush();
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toBe(undefined);
+            });
+        });
+        it('should override next parameter in loginUrl', function () {
+            angular.module("test.nextUrl.1", ['ui.router', 'visor'])
+                .config(function ($stateProvider, visorProvider, authenticatedOnly) {
+                    $stateProvider.state("private", {
+                        url: "/private_url",
+                        restrict: authenticatedOnly
+                    })
+                        .state("login", {
+                            url: "/login?next"
+                        })
+                    visorProvider.loginRoute = "/login?next=bad"
+                    visorProvider.authenticate = function ($q) {
+                        return $q.reject("not authenticated");
+                    };
+                });
+            module("test.nextUrl.1");
+            inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
+                $location.url("/private_url");
+                $rootScope.$apply();
+                $timeout.flush();
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toEqual("/private_url");
+            });
+        });
+        it('should not override next parameter in loginUrl if shouldAddNext is disabled', function () {
+            angular.module("test.nextUrl.1", ['ui.router', 'visor'])
+                .config(function ($stateProvider, visorProvider, authenticatedOnly) {
+                    $stateProvider.state("private", {
+                        url: "/private_url",
+                        restrict: authenticatedOnly
+                    })
+                        .state("login", {
+                            url: "/login?next"
+                        })
+                    visorProvider.loginRoute = "/login?next=bad"
+                    visorProvider.shouldAddNext = false;
+                    visorProvider.authenticate = function ($q) {
+                        return $q.reject("not authenticated");
+                    };
+                });
+            module("test.nextUrl.1");
+            inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
+                $location.url("/private_url");
+                $rootScope.$apply();
+                $timeout.flush();
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toEqual("bad");
+            });
+        });
+    })
 });
