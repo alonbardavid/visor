@@ -1,5 +1,20 @@
+<a name"0.1.2"></a>
+### 0.1.2 (2015-12-07)
+
+
+#### Bug Fixes
+
+* **visor:** next parameter now overrides existing parameters ([b0c89109](https://github.com/illniyar/visor/commit/b0c89109), closes [#14](https://github.com/illniyar/visor/issues/14))
+
+
+#### Features
+
+* **visor:** allow changing next parameter name ([04d5d5d0](https://github.com/illniyar/visor/commit/04d5d5d0))
+
+
 <a name"0.1.0"></a>
-## 0.1.0 (2015-07-08)
+### 0.1.0 (2015-07-08)
+
 
 #### Bug Fixes
 

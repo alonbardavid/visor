@@ -1,7 +1,7 @@
 {
   "name": "angular-visor",
   "author": "Illniyar",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "release/visor.js",
   "description": "Angular authentication and authorization library",
   "repository": "https://github.com/illniyar/visor.git",
