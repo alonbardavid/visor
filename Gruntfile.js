@@ -71,7 +71,15 @@ module.exports = function (grunt) {
                     src: ['visor.js', 'visor.min.js'],
                     cwd: '<%=builddir%>/',
                     dest: '<%=releasedir%>/'
-                }]
+                },
+                    {src: 'bower_components/angular/angular.js',
+                        dest:'sample/lib/angular.js'},
+                    {src: 'bower_components/angular-ui-router/release/angular-ui-router.js',
+                        dest:'sample/lib/angular-ui-router.js'},
+                    {src: 'bower_components/angular-route/angular-route.js',
+                        dest:'sample/lib/angular-route.js'},
+                    {src: 'bower_components/angular-cookies/angular-cookies.js',
+                        dest:'sample/lib/angular-cookies.js'}]
             },
             site: {
                 files: [
