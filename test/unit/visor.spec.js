@@ -305,7 +305,6 @@ describe('visor', function () {
                 expect($state.current.name).toEqual("login");
                 visor.setAuthenticated({username: "some_name"});
                 $rootScope.$apply();
-                $timeout.flush();
                 //should redirect back to original route automatically
                 expect($location.url()).toEqual("/private_url");
             });
