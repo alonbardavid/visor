@@ -459,5 +459,36 @@ describe('visor', function () {
                 expect($location.url()).toEqual("/private_url");
             });
         });
+        it('should allow changing next url manually', function () {
+            angular.module("test.nextUrl.6", ['ui.router', 'visor'])
+                .config(function ($stateProvider, visorProvider, authenticatedOnly,$urlRouterProvider) {
+                    $stateProvider.state("dashboard", {
+                        url: "/dashboard",
+                        restrict: authenticatedOnly
+                    }).state("private", {
+                        url: "/private",
+                        restrict: authenticatedOnly
+                    })
+                    .state("login", {
+                        url: "/login"
+                    })
+                    visorProvider.authenticate = function ($q) {
+                        return $q.reject("not authenticated");
+                    };
+                });
+            module("test.nextUrl.6");
+            inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
+                $location.url("/dashboard");
+                $rootScope.$apply();
+                $timeout.flush();
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toEqual("/dashboard");
+                $location.search('next','/private');
+                visor.setAuthenticated({username: "some_name"});
+                $rootScope.$apply();
+                //should redirect back to original route automatically
+                expect($location.url()).toEqual("/private");
+            });
+        });
     })
 });
