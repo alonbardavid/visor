@@ -163,6 +163,21 @@
              */
             config.shouldAddNext = true;
             /**
+             * @ngdoc property
+             * @name visor.visorProvider#nextParameterName
+             * @propertyOf visor.visorProvider
+             *
+             * @description
+             *
+             * The name of the parameter where the url that was restricted will be added to determine redirections
+             * when using {@link visor.visorProvider#shouldAddNext `visorProvider.shouldAddNext`}
+             *
+             * See {@link visor.visorProvider#shouldAddNext `visorProvider.shouldAddNext`} for more.
+             *
+             * Defaults to 'next'
+             */
+            config.nextParameterName = 'next';
+            /**
              * @ngdoc function
              * @name visor.visorProvider#authenticate
              * @propertyOf visor.visorProvider
@@ -222,7 +237,7 @@
             config.doOnNotAuthenticated = ["$location", "restrictedUrl", function ($location, restrictedUrl) {
                 $location.url(config.loginRoute);
                 if (config.shouldAddNext) {
-                    $location.search('next',restrictedUrl);
+                    $location.search(config.nextParameterName,restrictedUrl);
                 }
             }];
             /**
@@ -248,7 +263,7 @@
              * </pre>
              */
             config.doAfterManualAuthentication = ["$location", function ($location) {
-                $location.url($location.search().next || config.homeRoute);
+                $location.url($location.search()[config.nextParameterName] || config.homeRoute);
             }];
             /**
              * @ngdoc function

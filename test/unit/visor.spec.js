@@ -351,9 +351,13 @@ describe('visor', function () {
                 expect($location.search().next).toEqual("/private_url");
                 expect($location.search().name).toEqual("myName");
                 expect($location.hash()).toEqual("myHash");
+                visor.setAuthenticated({username: "some_name"});
+                $rootScope.$apply();
+                //should redirect back to original route automatically
+                expect($location.url()).toEqual("/private_url");
             });
         });
-        it('should מםא add nextUrl to loginRoute if shouldAddNext option is disabled', function () {
+        it('should add nextUrl to loginRoute if shouldAddNext option is disabled', function () {
             angular.module("test.nextUrl.2", ['ui.router', 'visor'])
                 .config(function ($stateProvider, visorProvider, authenticatedOnly) {
                     $stateProvider.state("private", {
@@ -378,7 +382,7 @@ describe('visor', function () {
             });
         });
         it('should override next parameter in loginUrl', function () {
-            angular.module("test.nextUrl.1", ['ui.router', 'visor'])
+            angular.module("test.nextUrl.3", ['ui.router', 'visor'])
                 .config(function ($stateProvider, visorProvider, authenticatedOnly) {
                     $stateProvider.state("private", {
                         url: "/private_url",
@@ -392,7 +396,7 @@ describe('visor', function () {
                         return $q.reject("not authenticated");
                     };
                 });
-            module("test.nextUrl.1");
+            module("test.nextUrl.3");
             inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
                 $location.url("/private_url");
                 $rootScope.$apply();
@@ -402,7 +406,7 @@ describe('visor', function () {
             });
         });
         it('should not override next parameter in loginUrl if shouldAddNext is disabled', function () {
-            angular.module("test.nextUrl.1", ['ui.router', 'visor'])
+            angular.module("test.nextUrl.4", ['ui.router', 'visor'])
                 .config(function ($stateProvider, visorProvider, authenticatedOnly) {
                     $stateProvider.state("private", {
                         url: "/private_url",
@@ -417,13 +421,43 @@ describe('visor', function () {
                         return $q.reject("not authenticated");
                     };
                 });
-            module("test.nextUrl.1");
+            module("test.nextUrl.4");
             inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
                 $location.url("/private_url");
                 $rootScope.$apply();
                 $timeout.flush();
                 expect($state.current.name).toEqual("login");
                 expect($location.search().next).toEqual("bad");
+            });
+        });
+        it('should allow next parameter to be replaced with different name', function () {
+            angular.module("test.nextUrl.5", ['ui.router', 'visor'])
+                .config(function ($stateProvider, visorProvider, authenticatedOnly) {
+                    $stateProvider.state("private", {
+                        url: "/private_url",
+                        restrict: authenticatedOnly
+                    })
+                    .state("login", {
+                        url: "/login?next"
+                    })
+                    visorProvider.loginRoute = "/login?next=shouldStay"
+                    visorProvider.nextParameterName = "newNext"
+                    visorProvider.authenticate = function ($q) {
+                        return $q.reject("not authenticated");
+                    };
+                });
+            module("test.nextUrl.5");
+            inject(function ($rootScope, $state, $q, $location, visor, $timeout) {
+                $location.url("/private_url");
+                $rootScope.$apply();
+                $timeout.flush();
+                expect($state.current.name).toEqual("login");
+                expect($location.search().next).toEqual("shouldStay");
+                expect($location.search().newNext).toEqual("/private_url");
+                visor.setAuthenticated({username: "some_name"});
+                $rootScope.$apply();
+                //should redirect back to original route automatically
+                expect($location.url()).toEqual("/private_url");
             });
         });
     })
