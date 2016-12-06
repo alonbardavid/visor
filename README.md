@@ -1,6 +1,6 @@
 #Visor
 
-## Authentication and authorization library for angular.js [![Build Status](https://travis-ci.org/Illniyar/visor.svg)](https://travis-ci.org/Illniyar/visor)[![Dependency Status](https://gemnasium.com/Illniyar/visor.svg)](https://gemnasium.com/Illniyar/visor)
+## Authentication and authorization library for angular.js [![Build Status](https://travis-ci.org/alonbardavid/visor.svg)](https://travis-ci.org/alonbardavid/visor)[![Dependency Status](https://gemnasium.com/Illniyar/visor.svg)](https://gemnasium.com/Illniyar/visor)
 ---
 
 Visor is an authentication and authorization framework for [AngularJS](http://angularjs.org).  
@@ -10,16 +10,16 @@ Visor works with both ngRoute and ui-router.
 ## Quick start
 
 **Get Visor**:
- - download the [release](http://illniyar.github.io/visor/release/visor.js) (or [minified](http://illniyar.github.io/visor/release/visor.min.js))
+ - download the [release](http://alonbardavid.github.io/visor/release/visor.js) (or [minified](http://alonbardavid.github.io/visor/release/visor.min.js))
  - via **[Bower](http://bower.io/)**: by running `$ bower install visor` from your console
  - via **[NPM](https://www.npmjs.com/package/angular-visor)**: by running `$ npm install --save angular-visor` from your console
 
 **Sample apps**:
- - A sample app using ui-router can be found [here](http://illniyar.github.io/visor/sample/ui-router) ([source](https://github.com/Illniyar/visor/tree/master/sample/ui-router))
- - A sample app using ng-route can be found [here](http://illniyar.github.io/visor/sample/ng-route) ([source](https://github.com/Illniyar/visor/tree/master/sample/ng-route))
+ - A sample app using ui-router can be found [here](http://alonbardavid.github.io/visor/sample/ui-router) ([source](https://github.com/alonbardavid/visor/tree/master/sample/ui-router))
+ - A sample app using ng-route can be found [here](http://alonbardavid.github.io/visor/sample/ng-route) ([source](https://github.com/alonbardavid/visor/tree/master/sample/ng-route))
 
 **API documentation**:
- - [API docs](http://illniyar.github.io/visor/docs)
+ - [API docs](http://alonbardavid.github.io/visor/docs)
  
 ###Authenticate with visor:
 
