@@ -10,7 +10,7 @@
      *
      */
     angular.module('visor.ui-router', ['visor.permissions'])
-        .run(['$rootScope', 'visorPermissions', '$injector', '$timeout', '$location', function ($rootScope, visorPermissions, $injector, $timeout, $location) {
+        .run(['$rootScope', 'visorPermissions', '$injector', '$timeout', function ($rootScope, visorPermissions, $injector, $timeout) {
             var uiModuleExists = false;
             try {
                 $injector.get('$state');
@@ -18,7 +18,7 @@
             } catch (e) {
             }
             if (uiModuleExists) {
-                $injector.invoke(['$state', function ($state) {
+                $injector.invoke(['$transitions', '$state', function ($transitions, $state) {
                     // we need to check parent states for permissions as well
                     visorPermissions.getPermissionsFromNext = function (next) {
                         var perms = [];
@@ -37,14 +37,15 @@
                         }
                         return perms;
                     };
-                    var $urlRouter = $injector.get('$urlRouter');
                     var toUrl = null;
                     var bypass = false;
-                    $rootScope.$on('$stateChangeStart', function (e, toState, toParams) {
+                    $transitions.onBefore({}, function (trans) {
                         if (bypass) {
                             bypass = false;
                             return;
                         }
+                        var toState = trans.to();
+                        var toParams = trans.params('to');
                         toUrl = $state.href(toState, toParams).replace(/^#/, '');
                         var shouldContinue = visorPermissions.onRouteChange(toState, function delayChange(promise) {
                             promise.then(function () {
@@ -53,7 +54,7 @@
                             })
                         });
                         if (!shouldContinue || shouldContinue === 'delayed') {
-                            e.preventDefault();
+                            return false;
                         }
                     });
                     visorPermissions.invokeNotAllowed = function (notAllowed) {
@@ -63,12 +64,11 @@
                         $timeout(function () {
                             $injector.invoke(notAllowed, null, {restrictedUrl: toUrl})
                         }, 0);
-                    }
+                    };
                     visorPermissions.getRoute = function (routeId) {
                         return $state.get(routeId);
                     };
                 }]);
-
             }
         }])
 })();
