@@ -1154,12 +1154,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
                         }
                     });
                     visorPermissions.invokeNotAllowed = function (notAllowed) {
-
-                        //timeout is required because when using preventDefault on $stateChangeStart, the url is
-                        //reverted to it's original location, and no change at this time will override this.
-                        $timeout(function () {
-                            $injector.invoke(notAllowed, null, {restrictedUrl: toUrl})
-                        }, 0);
+                        $injector.invoke(notAllowed, null, {restrictedUrl: toUrl})
                     };
                     visorPermissions.getRoute = function (routeId) {
                         return $state.get(routeId);
